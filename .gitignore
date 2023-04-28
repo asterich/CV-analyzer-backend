@@ -1,4 +1,4 @@
 data/
-go.mod
-go.sum
 .DS_Store
+log/
+static/
