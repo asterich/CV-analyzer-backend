@@ -17,6 +17,7 @@ func InitRouter() *gin.Engine {
 
 	{
 		api_v1.POST("/upload", v1.UploadFile)
+		api_v1.POST("/upload/multi", v1.UploadMultiFile)
 	}
 
 	return r
