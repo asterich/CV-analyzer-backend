@@ -1,14 +1,19 @@
 package converter
 
-import (
-	"code.sajari.com/docconv"
-)
+import "github.com/CV-analyzer-backend/src/model"
 
-func ConvertDoc(path string) (*docconv.Response, error) {
-	res, err := docconv.ConvertPath(path)
-	if err != nil {
-		return nil, err
-	}
-	// fmt.Println(res.Body)
-	return res, nil
+func ExtractDegreeFromEducations(educations []model.Education) string {
+	// TODO: extract degree from educations
+	return ""
+}
+
+func ExtractWorkingYearsFromWorkExperiences(workExperiences []model.WorkExperience) int {
+	// TODO: extract working years from work experiences
+	return 0
+}
+
+func ConvertDoc(path string) (model.CV, error) {
+
+	// TODO: convert the file to CV
+	return model.CV{}, nil
 }

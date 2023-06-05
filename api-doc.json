@@ -1,0 +1,648 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "CV API",
+		"version": "1.0.0"
+	},
+	"servers": [
+		{
+			"url": "http://localhost:8080",
+			"description": "Development server"
+		}
+	],
+	"paths": {
+		"/cv/filename": {
+			"get": {
+				"summary": "Retrieve a CV by filename",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "filename",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The filename of the CV."
+					},
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of CVs to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of CVs to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array of CV objects",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/CV"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "CV not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete a CV by filename",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "filename",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The filename of the CV to delete."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "CV successfully deleted"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/cv/name": {
+			"get": {
+				"summary": "Retrieve CVs by name",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "name",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The name to search for CVs."
+					},
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of CVs to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of CVs to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array of CV objects",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/CV"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "CV not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/cv/degree": {
+			"get": {
+				"summary": "Retrieve CVs by degree",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "degree",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "Internal server error"
+					},
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of CVs to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of CVs to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array of CV objects",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/CV"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "CV not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/cv/working_years": {
+			"get": {
+				"summary": "Retrieve CVs by a minimum number of working years",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "workingYears",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						},
+						"description": "The minimum number of working years to search for CVs."
+					},
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of CVs to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of CVs to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array of CV objects",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/CV"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "CV not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/all_positions": {
+			"get": {
+				"summary": "Retrieve all positions",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of CVs to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of CVs to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array of positions",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Position"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/positions/name": {
+			"get": {
+				"summary": "Retrieve positions by name",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "name",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of CVs to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of CVs to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array of positions",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Position"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/positions/company": {
+			"get": {
+				"summary": "Retrieve positions by company name",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "company",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of CVs to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of CVs to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array of positions",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Position"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/positions/department": {
+			"get": {
+				"summary": "Retrieve positions by department",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "department",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of CVs to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of CVs to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array of positions",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Position"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/positions/major": {
+			"get": {
+				"summary": "Retrieve positions by major",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "major",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of CVs to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of CVs to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array of positions",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Position"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/positions/degree": {
+			"get": {
+				"summary": "Retrieve positions by degree",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "degree",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of CVs to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of CVs to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array of positions",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Position"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/positions/working_years": {
+			"get": {
+				"summary": "Retrieve positions by a minimum number of working years",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "working_years",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of CVs to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of CVs to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array of positions",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Position"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/positions/filename/{filename}": {
+			"delete": {
+				"summary": "Delete a position by filename",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "filename",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Position successfully deleted"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"CV": {
+				"type": "object",
+				"properties": {
+					"code": {
+						"type": "integer"
+					},
+					"msg": {
+						"type": "string"
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"additionalProperties": true
+						}
+					}
+				}
+			},
+			"Position": {
+				"type": "object",
+				"properties": {
+					"code": {
+						"type": "integer"
+					},
+					"msg": {
+						"type": "string"
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"additionalProperties": true
+						}
+					}
+				}
+			}
+		}
+	}
+}
