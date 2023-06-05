@@ -1,7 +1,7 @@
 package router
 
 import (
-	v1 "github.com/CV-analyzer-backend/src/api/v1"
+	v1 "github.com/asterich/CV-analyzer-backend/src/api/v1"
 	"github.com/gin-gonic/gin"
 )
 

@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/CV-analyzer-backend/src/utils"
+	"github.com/asterich/CV-analyzer-backend/src/utils"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"

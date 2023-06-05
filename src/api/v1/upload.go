@@ -7,9 +7,9 @@ import (
 
 	"log"
 
-	"github.com/CV-analyzer-backend/src/converter"
-	"github.com/CV-analyzer-backend/src/model"
-	"github.com/CV-analyzer-backend/src/utils"
+	"github.com/asterich/CV-analyzer-backend/src/converter"
+	"github.com/asterich/CV-analyzer-backend/src/model"
+	"github.com/asterich/CV-analyzer-backend/src/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -72,7 +72,7 @@ func UploadMultiFile(c *gin.Context) {
 	for _, file := range files {
 		filename := filepath.Base(file.Filename)
 		log.Printf("filename: %s\n", filename)
-		if err := c.SaveUploadedFile(file, utils.UploadPath + filename); err != nil {
+		if err := c.SaveUploadedFile(file, utils.UploadPath+filename); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"code": 400,
 				"msg":  fmt.Sprintf("文件%s保存失败", filename),

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/CV-analyzer-backend/src/router"
+	"github.com/asterich/CV-analyzer-backend/src/router"
 )
 
 func main() {

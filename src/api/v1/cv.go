@@ -4,8 +4,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/CV-analyzer-backend/src/model"
-	"github.com/CV-analyzer-backend/src/utils"
+	"github.com/asterich/CV-analyzer-backend/src/model"
+	"github.com/asterich/CV-analyzer-backend/src/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )

@@ -1,6 +1,6 @@
 package converter
 
-import "github.com/CV-analyzer-backend/src/model"
+import "github.com/asterich/CV-analyzer-backend/src/model"
 
 func ExtractDegreeFromEducations(educations []model.Education) string {
 	// TODO: extract degree from educations
