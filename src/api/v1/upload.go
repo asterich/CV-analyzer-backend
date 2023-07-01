@@ -14,7 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UploadFile(c *gin.Context) {
+func UploadCV(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -34,7 +34,7 @@ func UploadFile(c *gin.Context) {
 	}
 
 	// TODO: convert the file to CV and save it to the database
-	cv, err := converter.ConvertDoc(utils.UploadPath + filename)
+	cv, err := converter.ConvertDocToCV(utils.UploadPath + filename)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": 400,
@@ -58,7 +58,7 @@ func UploadFile(c *gin.Context) {
 	})
 }
 
-func UploadMultiFile(c *gin.Context) {
+func UploadMultiCV(c *gin.Context) {
 	form, err := c.MultipartForm()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -80,7 +80,7 @@ func UploadMultiFile(c *gin.Context) {
 			continue
 		}
 		// TODO: convert the file to CV and save it to the database
-		cv, err := converter.ConvertDoc(utils.UploadPath + filename)
+		cv, err := converter.ConvertDocToCV(utils.UploadPath + filename)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"code": 400,
@@ -101,4 +101,43 @@ func UploadMultiFile(c *gin.Context) {
 		"code": 200,
 		"msg":  "文件上传成功",
 	})
+}
+
+func UploadPosition(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": 400,
+			"msg":  "文件上传失败",
+		})
+		return
+	}
+
+	filename := filepath.Base(file.Filename)
+	if err := c.SaveUploadedFile(file, utils.UploadPath+filename); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": 400,
+			"msg":  "文件保存失败",
+		})
+		return
+	}
+
+	positions, err := converter.ConvertDocToPositions(utils.UploadPath + filename)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": 400,
+			"msg":  "文件转换失败",
+		})
+		return
+	}
+
+	for _, position := range positions {
+		if err := model.CreatePosition(&position); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"code": 400,
+				"msg":  "岗位信息创建失败",
+			})
+			return
+		}
+	}
 }

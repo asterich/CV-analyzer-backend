@@ -2,7 +2,6 @@ package model
 
 import (
 	"log"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -16,13 +15,13 @@ type ContactInfo struct {
 }
 
 type Duration struct {
-	Begin time.Time `gorm:"type:time" json:"start_time"`
-	End   time.Time `gorm:"type:time" json:"end_time"`
+	Begin uint64 `gorm:"type:uint" json:"start_time"`
+	End   uint64 `gorm:"type:uint" json:"end_time"`
 }
 
 type Education struct {
-	gorm.Model
-	CVId     uint `gorm:"type:int" json:"cv_id"`
+	ID       int `gorm:"type:int;primaryKey"`
+	CVId     int `gorm:"type:int" json:"cv_id"`
 	Duration `gorm:"embedded"`
 	School   string `gorm:"type:varchar(50)" json:"school"`
 	Degree   string `gorm:"type:varchar(20)" json:"degree"`
@@ -36,52 +35,52 @@ type Experience struct {
 }
 
 type WorkExperience struct {
-	gorm.Model
-	CVId       uint `gorm:"type:int" json:"cv_id"`
+	ID         int `gorm:"type:int;primaryKey" json:"id"`
+	CVId       int `gorm:"type:int" json:"cv_id"`
 	Duration   `gorm:"embedded"`
 	Experience `gorm:"embedded"`
 }
 
 type SchoolExperience struct {
-	gorm.Model
-	CVId       uint `gorm:"type:int" json:"cv_id"`
+	ID         int `gorm:"type:int;primaryKey" json:"id"`
+	CVId       int `gorm:"type:int" json:"cv_id"`
 	Experience `gorm:"embedded"`
 }
 
 type InternshipExperience struct {
-	gorm.Model
-	CVId       uint `gorm:"type:int" json:"cv_id"`
+	ID         int `gorm:"type:int;primaryKey" json:"id"`
+	CVId       int `gorm:"type:int" json:"cv_id"`
 	Experience `gorm:"embedded"`
 }
 
 type ProjectExperience struct {
-	gorm.Model
-	CVId uint   `gorm:"type:int" json:"cv_id"`
+	ID   int    `gorm:"type:int;primaryKey"`
+	CVId int    `gorm:"type:int" json:"cv_id"`
 	Name string `gorm:"type:varchar(50)" json:"project_name"`
 	Desc string `gorm:"type:varchar(512)" json:"project_description"`
 }
 
 type Award struct {
-	gorm.Model
-	CVId  uint   `gorm:"type:int" json:"cv_id"`
+	ID    int    `gorm:"type:int;primaryKey"`
+	CVId  int    `gorm:"type:int" json:"cv_id"`
 	Name  string `gorm:"type:varchar(50)" json:"award_name"`
 	Level string `gorm:"type:varchar(20)" json:"level"`
 }
 
 type Skill struct {
-	gorm.Model
-	CVId uint   `gorm:"type:int" json:"cv_id"`
+	ID   int    `gorm:"type:int;primaryKey"`
+	CVId int    `gorm:"type:int" json:"cv_id"`
 	Name string `gorm:"type:varchar(32)" json:"skill_name"`
 }
 
 type CV struct {
-	gorm.Model
-	Filename              string      `gorm:"type:varchar(64)" json:"filename"`
-	Name                  string      `gorm:"type:varchar(16)" json:"name"`
-	Age                   int         `gorm:"type:int" json:"age"`
-	ContactInfo           ContactInfo `gorm:"embedded"`
-	Degree                string      `gorm:"type:varchar(20)" json:"degree"` // Degree is extracted from education
-	WorkingYears          int         `gorm:"type:int" json:"working_years"`  // WorkingYears is extracted from work experience
+	ID                    int    `gorm:"type:int;primaryKey"`
+	Filename              string `gorm:"type:varchar(64)" json:"filename"`
+	Name                  string `gorm:"type:varchar(16)" json:"name"`
+	Age                   uint64 `gorm:"type:uint" json:"age"`
+	ContactInfo           `gorm:"embedded"`
+	Degree                string `gorm:"type:varchar(20)" json:"degree"` // Degree is extracted from education
+	WorkingYears          uint64 `gorm:"type:uint" json:"working_years"` // WorkingYears is extracted from work experience
 	Educations            []Education
 	WorkExperiences       []WorkExperience
 	SchoolExperiences     []SchoolExperience

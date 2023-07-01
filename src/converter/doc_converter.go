@@ -12,8 +12,13 @@ func ExtractWorkingYearsFromWorkExperiences(workExperiences []model.WorkExperien
 	return 0
 }
 
-func ConvertDoc(path string) (model.CV, error) {
+func ConvertDocToCV(path string) (model.CV, error) {
 
 	// TODO: convert the file to CV
+
 	return model.CV{}, nil
+}
+
+func ConvertDocToPositions(path string) ([]model.Position, error) {
+	return make([]model.Position, 0), nil
 }

@@ -2,19 +2,33 @@ package model
 
 import (
 	"log"
+	"os"
 	"time"
 
 	"github.com/asterich/CV-analyzer-backend/src/utils"
 
-	"gorm.io/driver/sqlite"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
+)
+
+var newLogger = logger.New(
+	log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+	logger.Config{
+		SlowThreshold:             time.Second, // Slow SQL threshold
+		LogLevel:                  logger.Info, // Log level
+		IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
+		ParameterizedQueries:      true,        // Don't include params in the SQL log
+		Colorful:                  true,        // Disable color
+	},
 )
 
 var Db, err = gorm.Open(sqlite.Open(utils.DbPath), &gorm.Config{
 	NamingStrategy: schema.NamingStrategy{
 		SingularTable: true,
 	},
+	Logger: newLogger,
 })
 
 func InitDb() {

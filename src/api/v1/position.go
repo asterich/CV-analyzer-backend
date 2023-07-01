@@ -1,17 +1,19 @@
 package v1
 
 import (
-	"os"
+	"encoding/json"
+	"log"
 	"strconv"
 
 	"github.com/asterich/CV-analyzer-backend/src/model"
-	"github.com/asterich/CV-analyzer-backend/src/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func GetAllPositions(c *gin.Context) {
 	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	page, _ := strconv.Atoi(c.DefaultQuery("pagenum", "1"))
+	log.Default().Println("pagesize: ", pagesize)
+	log.Default().Println("page: ", page)
 	positions, err := model.GetAllPositions(pagesize, page)
 	if err != nil {
 		c.JSON(500, gin.H{
@@ -20,6 +22,7 @@ func GetAllPositions(c *gin.Context) {
 		})
 	}
 
+	log.Default().Println("positions: ", positions)
 	c.JSON(200, gin.H{
 		"code": 200,
 		"msg":  "success",
@@ -30,7 +33,7 @@ func GetAllPositions(c *gin.Context) {
 func GetPositionsByName(c *gin.Context) {
 	name := c.Query("name")
 	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	page, _ := strconv.Atoi(c.DefaultQuery("pagenum", "1"))
 	positions, err := model.GetPositionsByName(name, pagesize, page)
 	if err != nil {
 		c.JSON(500, gin.H{
@@ -46,48 +49,48 @@ func GetPositionsByName(c *gin.Context) {
 	})
 }
 
-func GetPositionsByCompany(c *gin.Context) {
-	company := c.Query("company")
-	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	positions, err := model.GetPositionsByCompany(company, pagesize, page)
-	if err != nil {
-		c.JSON(500, gin.H{
-			"code": 500,
-			"msg":  "Internal server error",
-		})
-	}
+// func GetPositionsByCompany(c *gin.Context) {
+// 	company := c.Query("company")
+// 	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
+// 	page, _ := strconv.Atoi(c.DefaultQuery("pagenum", "1"))
+// 	positions, err := model.GetPositionsByCompany(company, pagesize, page)
+// 	if err != nil {
+// 		c.JSON(500, gin.H{
+// 			"code": 500,
+// 			"msg":  "Internal server error",
+// 		})
+// 	}
 
-	c.JSON(200, gin.H{
-		"code": 200,
-		"msg":  "success",
-		"data": positions,
-	})
-}
+// 	c.JSON(200, gin.H{
+// 		"code": 200,
+// 		"msg":  "success",
+// 		"data": positions,
+// 	})
+// }
 
-func GetPositionsByDepartment(c *gin.Context) {
-	department := c.Query("department")
-	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	positions, err := model.GetPositionsByDepartment(department, pagesize, page)
-	if err != nil {
-		c.JSON(500, gin.H{
-			"code": 500,
-			"msg":  "Internal server error",
-		})
-	}
+// func GetPositionsByDepartment(c *gin.Context) {
+// 	department := c.Query("department")
+// 	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
+// 	page, _ := strconv.Atoi(c.DefaultQuery("pagenum", "1"))
+// 	positions, err := model.GetPositionsByDepartment(department, pagesize, page)
+// 	if err != nil {
+// 		c.JSON(500, gin.H{
+// 			"code": 500,
+// 			"msg":  "Internal server error",
+// 		})
+// 	}
 
-	c.JSON(200, gin.H{
-		"code": 200,
-		"msg":  "success",
-		"data": positions,
-	})
-}
+// 	c.JSON(200, gin.H{
+// 		"code": 200,
+// 		"msg":  "success",
+// 		"data": positions,
+// 	})
+// }
 
 func GetPositionsByMajor(c *gin.Context) {
 	major := c.Query("major")
 	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	page, _ := strconv.Atoi(c.DefaultQuery("pagenum", "1"))
 	positions, err := model.GetPositionsByMajor(major, pagesize, page)
 	if err != nil {
 		c.JSON(500, gin.H{
@@ -106,7 +109,7 @@ func GetPositionsByMajor(c *gin.Context) {
 func GetPositionsByDegree(c *gin.Context) {
 	degree := c.Query("degree")
 	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	page, _ := strconv.Atoi(c.DefaultQuery("pagenum", "1"))
 	positions, err := model.GetPositionsByDegree(degree, pagesize, page)
 	if err != nil {
 		c.JSON(500, gin.H{
@@ -123,10 +126,11 @@ func GetPositionsByDegree(c *gin.Context) {
 }
 
 func GetPositionsByWorkingYears(c *gin.Context) {
-	workingYears, _ := strconv.Atoi(c.Query("working_years"))
+	var workingYears model.Duration
+	json.Unmarshal([]byte(c.Query("working_years")), &workingYears)
 	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	positions, err := model.GetPositionsGreaterThanWorkingYears(workingYears, pagesize, page)
+	page, _ := strconv.Atoi(c.DefaultQuery("pagenum", "1"))
+	positions, err := model.GetPositionsInRangeOfWorkingYears(workingYears, pagesize, page)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"code": 500,
@@ -142,25 +146,9 @@ func GetPositionsByWorkingYears(c *gin.Context) {
 }
 
 func DeletePosition(c *gin.Context) {
-	filename := c.Param("filename")
-	err := model.DeletePositionByFilename(filename)
+	id, _ := strconv.Atoi(c.Param("id"))
+	err := model.DeletePositionByID(id)
 	if err != nil {
-		c.JSON(500, gin.H{
-			"code": 500,
-			"msg":  "Internal server error",
-		})
-	}
-
-	file, err := os.Open(utils.UploadPath + filename)
-	if err != nil {
-		c.JSON(500, gin.H{
-			"code": 500,
-			"msg":  "Internal server error",
-		})
-	}
-	defer file.Close()
-
-	if err = os.Remove(filename); err != nil {
 		c.JSON(500, gin.H{
 			"code": 500,
 			"msg":  "Internal server error",
