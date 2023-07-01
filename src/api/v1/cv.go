@@ -18,6 +18,7 @@ func GetCVById(c *gin.Context) {
 			"code": 500,
 			"msg":  "Internal server error",
 		})
+		return
 	}
 
 	c.JSON(200, gin.H{
@@ -39,11 +40,13 @@ func GetCVByFilename(c *gin.Context) {
 				"code": 404,
 				"msg":  "CV not found",
 			})
+			return
 		} else {
 			c.JSON(500, gin.H{
 				"code": 500,
 				"msg":  "Internal server error",
 			})
+			return
 		}
 	}
 	c.JSON(200, gin.H{
@@ -64,11 +67,13 @@ func GetCVsByName(c *gin.Context) {
 				"code": 404,
 				"msg":  "CV not found",
 			})
+			return
 		} else {
 			c.JSON(500, gin.H{
 				"code": 500,
 				"msg":  "Internal server error",
 			})
+			return
 		}
 	}
 	c.JSON(200, gin.H{
@@ -89,11 +94,13 @@ func GetCVsByDegree(c *gin.Context) {
 				"code": 404,
 				"msg":  "CV not found",
 			})
+			return
 		} else {
 			c.JSON(500, gin.H{
 				"code": 500,
 				"msg":  "Internal server error",
 			})
+			return
 		}
 	}
 	c.JSON(200, gin.H{
@@ -115,11 +122,13 @@ func GetCVsGreaterThanWorkingYears(c *gin.Context) {
 				"code": 404,
 				"msg":  "CV not found",
 			})
+			return
 		} else {
 			c.JSON(500, gin.H{
 				"code": 500,
 				"msg":  "Internal server error",
 			})
+			return
 		}
 	}
 	c.JSON(200, gin.H{
@@ -139,11 +148,13 @@ func DeleteCVByID(c *gin.Context) {
 				"code": 404,
 				"msg":  "CV not found",
 			})
+			return
 		} else {
 			c.JSON(500, gin.H{
 				"code": 500,
 				"msg":  "Internal server error",
 			})
+			return
 		}
 	}
 	err = model.DeleteCVByID(id)
@@ -152,6 +163,7 @@ func DeleteCVByID(c *gin.Context) {
 			"code": 500,
 			"msg":  "Internal server error",
 		})
+		return
 	}
 
 	if err = os.Remove(utils.UploadPath + cv.Filename); err != nil {
@@ -159,6 +171,7 @@ func DeleteCVByID(c *gin.Context) {
 			"code": 500,
 			"msg":  "Internal server error",
 		})
+		return
 	}
 	c.JSON(200, gin.H{
 		"code": 200,
@@ -174,6 +187,7 @@ func DeleteCVByFilename(c *gin.Context) {
 			"code": 500,
 			"msg":  "Internal server error",
 		})
+		return
 	}
 
 	if err = os.Remove(utils.UploadPath + filename); err != nil {
@@ -181,6 +195,7 @@ func DeleteCVByFilename(c *gin.Context) {
 			"code": 500,
 			"msg":  "Internal server error",
 		})
+		return
 	}
 
 	c.JSON(200, gin.H{

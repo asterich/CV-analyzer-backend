@@ -97,6 +97,7 @@ func GetPositionsByMajor(c *gin.Context) {
 			"code": 500,
 			"msg":  "Internal server error",
 		})
+		return
 	}
 
 	c.JSON(200, gin.H{
@@ -116,6 +117,7 @@ func GetPositionsByDegree(c *gin.Context) {
 			"code": 500,
 			"msg":  "Internal server error",
 		})
+		return
 	}
 
 	c.JSON(200, gin.H{
@@ -136,6 +138,7 @@ func GetPositionsByWorkingYears(c *gin.Context) {
 			"code": 500,
 			"msg":  "Internal server error",
 		})
+		return
 	}
 
 	c.JSON(200, gin.H{
@@ -153,6 +156,7 @@ func DeletePosition(c *gin.Context) {
 			"code": 500,
 			"msg":  "Internal server error",
 		})
+		return
 	}
 
 	c.JSON(200, gin.H{

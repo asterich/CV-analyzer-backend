@@ -668,13 +668,13 @@
 				}
 			}
 		},
-		"/positions/filename/{filename}": {
+		"/positions/id": {
 			"delete": {
-				"summary": "Delete a position by filename",
+				"summary": "Delete a position by id",
 				"parameters": [
 					{
 						"in": "path",
-						"name": "filename",
+						"name": "id",
 						"required": true,
 						"schema": {
 							"type": "string"

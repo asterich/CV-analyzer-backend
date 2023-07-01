@@ -27,6 +27,7 @@ func InitRouter() *gin.Engine {
 		api_v1.GET("/cv/degree", v1.GetCVsByDegree)
 		api_v1.GET("/cv/working_years", v1.GetCVsGreaterThanWorkingYears)
 		api_v1.DELETE("/cv/filename/:filename", v1.DeleteCVByFilename)
+		api_v1.DELETE("/cv/id/:id", v1.DeleteCVByID)
 
 		// position
 		api_v1.GET("/all_positions", v1.GetAllPositions)
@@ -36,7 +37,7 @@ func InitRouter() *gin.Engine {
 		api_v1.GET("/positions/degree", v1.GetPositionsByDegree)
 		api_v1.GET("/positions/major", v1.GetPositionsByMajor)
 		api_v1.GET("/positions/working_years", v1.GetPositionsByWorkingYears)
-		api_v1.DELETE("/positions/filename/:filename", v1.DeletePosition)
+		api_v1.DELETE("/positions/id/:id", v1.DeletePosition)
 	}
 
 	return r
