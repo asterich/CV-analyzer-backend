@@ -10,6 +10,23 @@ import (
 	"gorm.io/gorm"
 )
 
+func GetCVById(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Query("id"))
+	data, err := model.GetCVById(id)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		c.JSON(500, gin.H{
+			"code": 500,
+			"msg":  "Internal server error",
+		})
+	}
+
+	c.JSON(200, gin.H{
+		"code": 200,
+		"msg":  "success",
+		"data": data,
+	})
+}
+
 func GetCVByFilename(c *gin.Context) {
 	path := c.Query("filename")
 	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
@@ -112,6 +129,43 @@ func GetCVsGreaterThanWorkingYears(c *gin.Context) {
 	})
 }
 
+func DeleteCVByID(c *gin.Context) {
+	idStr := c.Param("id")
+	id, _ := strconv.Atoi(idStr)
+	cv, err := model.GetCVById(id)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(404, gin.H{
+				"code": 404,
+				"msg":  "CV not found",
+			})
+		} else {
+			c.JSON(500, gin.H{
+				"code": 500,
+				"msg":  "Internal server error",
+			})
+		}
+	}
+	err = model.DeleteCVByID(id)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"code": 500,
+			"msg":  "Internal server error",
+		})
+	}
+
+	if err = os.Remove(utils.UploadPath + cv.Filename); err != nil {
+		c.JSON(500, gin.H{
+			"code": 500,
+			"msg":  "Internal server error",
+		})
+	}
+	c.JSON(200, gin.H{
+		"code": 200,
+		"msg":  "success",
+	})
+}
+
 func DeleteCVByFilename(c *gin.Context) {
 	filename := c.Param("filename")
 	err := model.DeleteCVByFilename(filename)
@@ -122,16 +176,7 @@ func DeleteCVByFilename(c *gin.Context) {
 		})
 	}
 
-	file, err := os.Open(utils.UploadPath + filename)
-	if err != nil {
-		c.JSON(500, gin.H{
-			"code": 500,
-			"msg":  "Internal server error",
-		})
-	}
-	defer file.Close()
-
-	if err = os.Remove(filename); err != nil {
+	if err = os.Remove(utils.UploadPath + filename); err != nil {
 		c.JSON(500, gin.H{
 			"code": 500,
 			"msg":  "Internal server error",

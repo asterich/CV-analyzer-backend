@@ -11,6 +11,65 @@
 		}
 	],
 	"paths": {
+		"/cv/id":{
+			"get": {
+				"summary": "Retrieve a CV by id",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The id of the CV."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "A CV object",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CV"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "CV not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete a CV by id",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The id of the CV to delete."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "CV successfully deleted"
+					},
+					"404": {
+						"description": "CV not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
 		"/cv/filename": {
 			"get": {
 				"summary": "Retrieve a CV by filename",
@@ -246,6 +305,34 @@
 					},
 					"404": {
 						"description": "CV not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/cv/upload": {
+			"post": {
+				"summary": "Upload a CV",
+				"requestBody": {
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"file": {
+										"type": "string",
+										"format": "binary"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "CV successfully uploaded"
 					},
 					"500": {
 						"description": "Internal server error"

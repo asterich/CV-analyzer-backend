@@ -20,7 +20,7 @@ type Duration struct {
 }
 
 type Education struct {
-	ID       int `gorm:"type:int;primaryKey"`
+	ID       int `gorm:"type:int;primaryKey;autoIncrement"`
 	CVId     int `gorm:"type:int" json:"cv_id"`
 	Duration `gorm:"embedded"`
 	School   string `gorm:"type:varchar(50)" json:"school"`
@@ -143,72 +143,72 @@ func constructCVArrayFields(cv *CV) error {
 	return nil
 }
 
-func saveCVArrayFields(cv *CV) error {
-	for i := range cv.Educations {
-		cv.Educations[i].CVId = cv.ID
-		err := Db.Save(&cv.Educations[i]).Error
-		if err != nil {
-			log.Println("Failed to save education, err:", err.Error())
-			return err
-		}
-	}
+// func saveCVArrayFields(cv *CV) error {
+// 	for i := range cv.Educations {
+// 		cv.Educations[i].CVId = cv.ID
+// 		err := Db.Create(&cv.Educations[i]).Error
+// 		if err != nil {
+// 			log.Println("Failed to save education, err:", err.Error())
+// 			return err
+// 		}
+// 	}
 
-	for i := range cv.WorkExperiences {
-		cv.WorkExperiences[i].CVId = cv.ID
-		err := Db.Save(&cv.WorkExperiences[i]).Error
-		if err != nil {
-			log.Println("Failed to save work experience, err:", err.Error())
-			return err
-		}
-	}
+// 	for i := range cv.WorkExperiences {
+// 		cv.WorkExperiences[i].CVId = cv.ID
+// 		err := Db.Create(&cv.WorkExperiences[i]).Error
+// 		if err != nil {
+// 			log.Println("Failed to save work experience, err:", err.Error())
+// 			return err
+// 		}
+// 	}
 
-	for i := range cv.SchoolExperiences {
-		cv.SchoolExperiences[i].CVId = cv.ID
-		err := Db.Save(&cv.SchoolExperiences[i]).Error
-		if err != nil {
-			log.Println("Failed to save school experience, err:", err.Error())
-			return err
-		}
-	}
+// 	for i := range cv.SchoolExperiences {
+// 		cv.SchoolExperiences[i].CVId = cv.ID
+// 		err := Db.Create(&cv.SchoolExperiences[i]).Error
+// 		if err != nil {
+// 			log.Println("Failed to save school experience, err:", err.Error())
+// 			return err
+// 		}
+// 	}
 
-	for i := range cv.InternshipExperiences {
-		cv.InternshipExperiences[i].CVId = cv.ID
-		err := Db.Save(&cv.InternshipExperiences[i]).Error
-		if err != nil {
-			log.Println("Failed to save internship experience, err:", err.Error())
-			return err
-		}
-	}
+// 	for i := range cv.InternshipExperiences {
+// 		cv.InternshipExperiences[i].CVId = cv.ID
+// 		err := Db.Create(&cv.InternshipExperiences[i]).Error
+// 		if err != nil {
+// 			log.Println("Failed to save internship experience, err:", err.Error())
+// 			return err
+// 		}
+// 	}
 
-	for i := range cv.ProjectExperiences {
-		cv.ProjectExperiences[i].CVId = cv.ID
-		err := Db.Save(&cv.ProjectExperiences[i]).Error
-		if err != nil {
-			log.Println("Failed to save project experience, err:", err.Error())
-			return err
-		}
-	}
+// 	for i := range cv.ProjectExperiences {
+// 		cv.ProjectExperiences[i].CVId = cv.ID
+// 		err := Db.Create(&cv.ProjectExperiences[i]).Error
+// 		if err != nil {
+// 			log.Println("Failed to save project experience, err:", err.Error())
+// 			return err
+// 		}
+// 	}
 
-	for i := range cv.Awards {
-		cv.Awards[i].CVId = cv.ID
-		err := Db.Save(&cv.Awards[i]).Error
-		if err != nil {
-			log.Println("Failed to save award, err:", err.Error())
-			return err
-		}
-	}
+// 	for i := range cv.Awards {
+// 		cv.Awards[i].CVId = cv.ID
+// 		err := Db.Create(&cv.Awards[i]).Error
+// 		if err != nil {
+// 			log.Println("Failed to save award, err:", err.Error())
+// 			return err
+// 		}
+// 	}
 
-	for i := range cv.Skills {
-		cv.Skills[i].CVId = cv.ID
-		err := Db.Save(&cv.Skills[i]).Error
-		if err != nil {
-			log.Println("Failed to save skill, err:", err.Error())
-			return err
-		}
-	}
+// 	for i := range cv.Skills {
+// 		cv.Skills[i].CVId = cv.ID
+// 		err := Db.Create(&cv.Skills[i]).Error
+// 		if err != nil {
+// 			log.Println("Failed to save skill, err:", err.Error())
+// 			return err
+// 		}
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
 func deleteCVArrayFields(cv *CV) error {
 	// TODO: check whether it's right
@@ -257,6 +257,27 @@ func deleteCVArrayFields(cv *CV) error {
 	return nil
 }
 
+func GetCVById(id int) (CV, error) {
+	var cv CV
+	err := Db.Model(&CV{}).Where("id = ?", id).First(&cv).Error
+	if err == gorm.ErrRecordNotFound {
+		log.Println("CV not found, err:", err.Error())
+		return CV{}, err
+	}
+	if err != nil {
+		log.Println("Failed to get CV by id, err:", err.Error())
+		return CV{}, err
+	}
+
+	err = constructCVArrayFields(&cv)
+	if err != nil {
+		log.Println("Failed to construct CV array fields, err:", err.Error())
+		return CV{}, err
+	}
+
+	return cv, nil
+}
+
 func GetCVByFilename(path string, limit int, offset int) (CV, error) {
 	var cv CV
 	err := Db.Model(&CV{}).Where("Filename = ?", path).
@@ -292,15 +313,17 @@ func GetCVsByName(name string, limit int, offset int) ([]CV, error) {
 		return nil, err
 	}
 
+	cvs_for_return := []CV{}
 	for _, cv := range cvs {
 		err = constructCVArrayFields(&cv)
 		if err != nil {
 			log.Println("Failed to construct CV array fields, err:", err.Error())
 			return nil, err
 		}
+		cvs_for_return = append(cvs_for_return, cv)
 	}
 
-	return cvs, nil
+	return cvs_for_return, nil
 }
 
 func GetCVsByDegree(degree string, limit int, offset int) ([]CV, error) {
@@ -316,15 +339,17 @@ func GetCVsByDegree(degree string, limit int, offset int) ([]CV, error) {
 		return nil, err
 	}
 
+	cvs_for_return := []CV{}
 	for _, cv := range cvs {
 		err = constructCVArrayFields(&cv)
 		if err != nil {
 			log.Println("Failed to construct CV array fields, err:", err.Error())
 			return nil, err
 		}
+		cvs_for_return = append(cvs_for_return, cv)
 	}
 
-	return cvs, nil
+	return cvs_for_return, nil
 }
 
 func GetCVsGreaterThanWorkingYears(workingYears int, limit int, offset int) ([]CV, error) {
@@ -340,15 +365,17 @@ func GetCVsGreaterThanWorkingYears(workingYears int, limit int, offset int) ([]C
 		return nil, err
 	}
 
+	cvs_for_return := []CV{}
 	for _, cv := range cvs {
 		err = constructCVArrayFields(&cv)
 		if err != nil {
 			log.Println("Failed to construct CV array fields, err:", err.Error())
 			return nil, err
 		}
+		cvs_for_return = append(cvs_for_return, cv)
 	}
 
-	return cvs, nil
+	return cvs_for_return, nil
 }
 
 func SetCV(cv *CV) error {
@@ -358,11 +385,11 @@ func SetCV(cv *CV) error {
 		return err
 	}
 
-	err = saveCVArrayFields(cv)
-	if err != nil {
-		log.Println("Failed to save CV array fields, err:", err.Error())
-		return err
-	}
+	// err = saveCVArrayFields(cv)
+	// if err != nil {
+	// 	log.Println("Failed to save CV array fields, err:", err.Error())
+	// 	return err
+	// }
 
 	return nil
 }
@@ -386,6 +413,33 @@ func DeleteCVByFilename(filename string) error {
 	}
 
 	err = Db.Delete(&cv, "Filename = ?", filename).Error
+	if err != nil {
+		log.Println("Failed to delete CV, err:", err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func DeleteCVByID(id int) error {
+	var cv CV
+	err := Db.Model(&CV{}).Where("id = ?", id).First(&cv).Error
+	if err == gorm.ErrRecordNotFound {
+		log.Println("CV not found, err:", err.Error())
+		return err
+	}
+	if err != nil {
+		log.Println("Failed to get CV by id, err:", err.Error())
+		return err
+	}
+
+	err = deleteCVArrayFields(&cv)
+	if err != nil {
+		log.Println("Failed to delete CV array fields, err:", err.Error())
+		return err
+	}
+
+	err = Db.Delete(&cv, "id = ?", id).Error
 	if err != nil {
 		log.Println("Failed to delete CV, err:", err.Error())
 		return err
