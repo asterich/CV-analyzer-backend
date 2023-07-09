@@ -6,9 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// TODO: Database structures need more consideration.
-//       Now just don't use database, use an array instead.
-
 type ContactInfo struct {
 	Tel   string `gorm:"type:varchar(20)" json:"tel"`
 	Email string `gorm:"type:varchar(50)" json:"email"`
@@ -79,7 +76,7 @@ type CV struct {
 	Name                  string `gorm:"type:varchar(16)" json:"name"`
 	Age                   uint64 `gorm:"type:uint" json:"age"`
 	ContactInfo           `gorm:"embedded"`
-	Degree                string `gorm:"type:varchar(20)" json:"degree"` // Degree is extracted from education
+	Degree                string `gorm:"type:varchar(20)" json:"degree"`
 	WorkingYears          uint64 `gorm:"type:uint" json:"working_years"` // WorkingYears is extracted from work experience
 	Educations            []Education
 	WorkExperiences       []WorkExperience
