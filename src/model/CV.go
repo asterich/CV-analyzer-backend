@@ -76,16 +76,16 @@ type CV struct {
 	Name                  string `gorm:"type:varchar(16)" json:"name"`
 	Age                   uint64 `gorm:"type:uint" json:"age"`
 	ContactInfo           `gorm:"embedded"`
-	Degree                string `gorm:"type:varchar(20)" json:"degree"`
-	WorkingYears          uint64 `gorm:"type:uint" json:"working_years"` // WorkingYears is extracted from work experience
-	Educations            []Education
-	WorkExperiences       []WorkExperience
-	SchoolExperiences     []SchoolExperience
-	InternshipExperiences []InternshipExperience
-	ProjectExperiences    []ProjectExperience
-	Awards                []Award
-	Skills                []Skill
-	SelfDesc              string `gorm:"type:varchar(1024)" json:"self_description"`
+	Degree                string                 `gorm:"type:varchar(20)" json:"degree"`
+	WorkingYears          uint64                 `gorm:"type:uint" json:"working_years"` // WorkingYears is extracted from work experience
+	Educations            []Education            `gorm:"-" json:"educations"`
+	WorkExperiences       []WorkExperience       `gorm:"-" json:"work_experiences"`
+	SchoolExperiences     []SchoolExperience     `gorm:"-" json:"school_experiences"`
+	InternshipExperiences []InternshipExperience `gorm:"-" json:"internship_experiences"`
+	ProjectExperiences    []ProjectExperience    `gorm:"-" json:"project_experiences"`
+	Awards                []Award                `gorm:"-" json:"awards"`
+	Skills                []Skill                `gorm:"-" json:"skills"`
+	SelfDesc              string                 `gorm:"type:varchar(1024)" json:"self_description"`
 }
 
 func constructCVArrayFields(cv *CV) error {
