@@ -691,9 +691,9 @@
 				}
 			}
 		},
-		"/all_degree": {
+		"/count_degree": {
 			"get": {
-				"summary": "Retrieve all degrees",
+				"summary": "Retrieve degrees count dict",
 				"parameters": [
 					{
 						"in": "query",
@@ -702,21 +702,12 @@
 						"schema": {
 							"type": "string"
 						},
-						"description": "The number of degrees to return."
-					},
-					{
-						"in": "query",
-						"name": "pagenum",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The page number of degrees to return."
+						"description": "The number of degrees that would be counted to return."
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "An array of degrees",
+						"description": "An map of degrees",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -731,9 +722,9 @@
 				}
 			}
 		},
-		"/all_workingyears": {
+		"/count_workingyears": {
 			"get": {
-				"summary": "Retrieve all workingyears",
+				"summary": "Retrieve workingyears count dict",
 				"parameters": [
 					{
 						"in": "query",
@@ -742,21 +733,12 @@
 						"schema": {
 							"type": "string"
 						},
-						"description": "The number of workingyears to return."
-					},
-					{
-						"in": "query",
-						"name": "pagenum",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The page number of workingyears to return."
+						"description": "The number of workingyears that would be counted to return."
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "An array of workingyears",
+						"description": "An map of workingyears",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -802,10 +784,14 @@
 						"type": "string"
 					},
 					"data": {
-						"type": "array",
-						"items": {
-							"type": "string",
-							"additionalProperties": false
+						"type": "object",
+                		"properties": {
+                  			"mapData": {
+                    			"type": "object",
+                    			"additionalProperties": {
+									"type":"string"
+								}
+       		           		}
 						}
 					}
 				}
@@ -820,10 +806,14 @@
 						"type": "string"
 					},
 					"data": {
-						"type": "array",
-						"items": {
-							"type": "integer",
-							"additionalProperties": false
+						"type": "object",
+                		"properties": {
+                  			"mapData": {
+                    			"type": "object",
+                    			"additionalProperties": {
+									"type":"int"	
+								}
+        	          		}
 						}
 					}
 				}
@@ -848,4 +838,4 @@
 			}
 		}
 	}
-}
+}	

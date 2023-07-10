@@ -35,6 +35,7 @@ const (
 )
 
 func init() {
+
 	var file, err = ini.Load("config/config.ini")
 	if err != nil {
 		log.Fatalln("Failed to load config.ini, err:", err.Error())

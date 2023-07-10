@@ -8,12 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetAllDegree(c *gin.Context) {
-	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
-	page, _ := strconv.Atoi(c.DefaultQuery("pagenum", "1"))
+func GetCountDegree(c *gin.Context) {
+	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "50"))
 	log.Default().Println("pagesize: ", pagesize)
-	log.Default().Println("page: ", page)
-	degrees, err := model.GetAllDegree(pagesize, page)
+	degrees, err := model.GetCountDegree(pagesize)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"code": 500,
@@ -29,12 +27,10 @@ func GetAllDegree(c *gin.Context) {
 	})
 }
 
-func GetAllWorkingyears(c *gin.Context) {
-	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
-	page, _ := strconv.Atoi(c.DefaultQuery("pagenum", "1"))
+func GetCountWorkingyears(c *gin.Context) {
+	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "50"))
 	log.Default().Println("pagesize: ", pagesize)
-	log.Default().Println("page: ", page)
-	workyears, err := model.GetAllWorkingyears(pagesize, page)
+	workyears, err := model.GetCountWorkingyears(pagesize)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"code": 500,
