@@ -690,6 +690,68 @@
 					}
 				}
 			}
+		},
+		"/count_degree": {
+			"get": {
+				"summary": "Retrieve degrees count dict",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of degrees that would be counted to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An map of degrees",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Degree"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/count_workingyears": {
+			"get": {
+				"summary": "Retrieve workingyears count dict",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of workingyears that would be counted to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An map of workingyears",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Workingyears"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
 		}
 	},
 	"components": {
@@ -708,6 +770,50 @@
 						"items": {
 							"type": "object",
 							"additionalProperties": true
+						}
+					}
+				}
+			},
+			"Degree":{
+				"type": "object",
+				"properties": {
+					"code": {
+						"type": "integer"
+					},
+					"msg": {
+						"type": "string"
+					},
+					"data": {
+						"type": "object",
+                		"properties": {
+                  			"mapData": {
+                    			"type": "object",
+                    			"additionalProperties": {
+									"type":"string"
+								}
+       		           		}
+						}
+					}
+				}
+			},
+			"Workingyears":{
+				"type": "object",
+				"properties": {
+					"code": {
+						"type": "integer"
+					},
+					"msg": {
+						"type": "string"
+					},
+					"data": {
+						"type": "object",
+                		"properties": {
+                  			"mapData": {
+                    			"type": "object",
+                    			"additionalProperties": {
+									"type":"int"	
+								}
+        	          		}
 						}
 					}
 				}
@@ -732,4 +838,4 @@
 			}
 		}
 	}
-}
+}	

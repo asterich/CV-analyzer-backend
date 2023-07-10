@@ -38,6 +38,10 @@ func InitRouter() *gin.Engine {
 		api_v1.GET("/positions/major", v1.GetPositionsByMajor)
 		api_v1.GET("/positions/working_years", v1.GetPositionsByWorkingYears)
 		api_v1.DELETE("/positions/id/:id", v1.DeletePosition)
+
+		//for visualize
+		api_v1.GET("/count_degree", v1.GetCountDegree)
+		api_v1.GET("/count_workingyears", v1.GetCountWorkingyears)
 	}
 
 	return r
