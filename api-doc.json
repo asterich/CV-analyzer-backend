@@ -690,6 +690,86 @@
 					}
 				}
 			}
+		},
+		"/all_degree": {
+			"get": {
+				"summary": "Retrieve all degrees",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of degrees to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of degrees to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array of degrees",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Degree"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/all_workingyears": {
+			"get": {
+				"summary": "Retrieve all workingyears",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of workingyears to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of workingyears to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array of workingyears",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Workingyears"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
 		}
 	},
 	"components": {
@@ -708,6 +788,42 @@
 						"items": {
 							"type": "object",
 							"additionalProperties": true
+						}
+					}
+				}
+			},
+			"Degree":{
+				"type": "object",
+				"properties": {
+					"code": {
+						"type": "integer"
+					},
+					"msg": {
+						"type": "string"
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"type": "string",
+							"additionalProperties": false
+						}
+					}
+				}
+			},
+			"Workingyears":{
+				"type": "object",
+				"properties": {
+					"code": {
+						"type": "integer"
+					},
+					"msg": {
+						"type": "string"
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"type": "integer",
+							"additionalProperties": false
 						}
 					}
 				}
