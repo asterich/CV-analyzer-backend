@@ -36,7 +36,7 @@ func UploadCV(c *gin.Context) {
 	}
 
 	// TODO: convert the file to CV and save it to the database
-	cv, err := converter.ConvertDocToCV(utils.UploadPath + filename)
+	cv, err := converter.ConvertDocToCV(utils.UploadPath + "/cv/" + filename)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": 500,
