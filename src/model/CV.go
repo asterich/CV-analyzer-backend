@@ -278,7 +278,7 @@ func GetCVById(id int) (CV, error) {
 
 func GetCVByFilename(path string, limit int, offset int) (CV, error) {
 	var cv CV
-	err := Db.Model(&CV{}).Where("Filename = ?", path).
+	err := Db.Model(&CV{}).Where("filename = ?", path).
 		Offset((offset - 1) * limit).Limit(limit).First(&cv).Error
 	if err == gorm.ErrRecordNotFound {
 		log.Println("CV not found, err:", err.Error())
@@ -300,7 +300,7 @@ func GetCVByFilename(path string, limit int, offset int) (CV, error) {
 
 func GetCVLesserThanAge(age int, limit int, offset int) ([]CV, error) {
 	var cvs []CV
-	err := Db.Model(&CV{}).Where("Age <= ?", age).
+	err := Db.Model(&CV{}).Where("age <= ?", age).
 		Offset((offset - 1) * limit).Limit(limit).Find(&cvs).Error
 	if err == gorm.ErrRecordNotFound {
 		log.Println("CV not found, err:", err.Error())
@@ -326,7 +326,7 @@ func GetCVLesserThanAge(age int, limit int, offset int) ([]CV, error) {
 
 func GetCVsByName(name string, limit int, offset int) ([]CV, error) {
 	var cvs []CV
-	err := Db.Model(&CV{}).Where("Name = ?", name).
+	err := Db.Model(&CV{}).Where("name = ?", name).
 		Offset((offset - 1) * limit).Limit(limit).Find(&cvs).Error
 	if err == gorm.ErrRecordNotFound {
 		log.Println("CV not found, err:", err.Error())
@@ -352,7 +352,7 @@ func GetCVsByName(name string, limit int, offset int) ([]CV, error) {
 
 func GetCVsByDegree(degree string, limit int, offset int) ([]CV, error) {
 	var cvs []CV
-	err := Db.Model(&CV{}).Where("Degree = ?", degree).
+	err := Db.Model(&CV{}).Where("degree = ?", degree).
 		Offset((offset - 1) * limit).Limit(limit).Find(&cvs).Error
 	if err == gorm.ErrRecordNotFound {
 		log.Println("CV not found, err:", err.Error())
@@ -378,7 +378,7 @@ func GetCVsByDegree(degree string, limit int, offset int) ([]CV, error) {
 
 func GetCVsGreaterThanWorkingYears(workingYears int, limit int, offset int) ([]CV, error) {
 	var cvs []CV
-	err := Db.Model(&CV{}).Where("WorkingYears >= ?", workingYears).
+	err := Db.Model(&CV{}).Where("working_years >= ?", workingYears).
 		Offset((offset - 1) * limit).Limit(limit).Find(&cvs).Error
 	if err == gorm.ErrRecordNotFound {
 		log.Println("CV not found, err:", err.Error())
