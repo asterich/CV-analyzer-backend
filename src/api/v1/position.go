@@ -9,6 +9,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetPositions(c *gin.Context) {
+	name := c.Query("name")
+	major := c.Query("major")
+	degree := c.Query("degree")
+	workingYears := c.Query("working_years")
+
+	if name != "" {
+		GetPositionsByName(c)
+	} else if major != "" {
+		GetPositionsByMajor(c)
+	} else if degree != "" {
+		GetPositionsByDegree(c)
+	} else if workingYears != "" {
+		GetPositionsByWorkingYears(c)
+	} else {
+		GetAllPositions(c)
+	}
+}
+
 func GetAllPositions(c *gin.Context) {
 	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
 	page, _ := strconv.Atoi(c.DefaultQuery("pagenum", "1"))

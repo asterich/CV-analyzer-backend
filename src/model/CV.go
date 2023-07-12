@@ -297,6 +297,32 @@ func GetCVByFilename(path string, limit int, offset int) (CV, error) {
 	return cv, nil
 }
 
+func GetCVLesserThanAge(age int, limit int, offset int) ([]CV, error) {
+	var cvs []CV
+	err := Db.Model(&CV{}).Where("Age <= ?", age).
+		Offset((offset - 1) * limit).Limit(limit).Find(&cvs).Error
+	if err == gorm.ErrRecordNotFound {
+		log.Println("CV not found, err:", err.Error())
+		return []CV{}, err
+	}
+	if err != nil {
+		log.Println("Failed to get CV by age, err:", err.Error())
+		return nil, err
+	}
+
+	cvs_for_return := []CV{}
+	for _, cv := range cvs {
+		err = constructCVArrayFields(&cv)
+		if err != nil {
+			log.Println("Failed to construct CV array fields, err:", err.Error())
+			return nil, err
+		}
+		cvs_for_return = append(cvs_for_return, cv)
+	}
+
+	return cvs_for_return, nil
+}
+
 func GetCVsByName(name string, limit int, offset int) ([]CV, error) {
 	var cvs []CV
 	err := Db.Model(&CV{}).Where("Name = ?", name).
@@ -375,6 +401,14 @@ func GetCVsGreaterThanWorkingYears(workingYears int, limit int, offset int) ([]C
 	return cvs_for_return, nil
 }
 
+func GetAllCVs(limit int, offset int) ([]CV, error) {
+	var CVs []CV
+	result := Db.Model(&CV{}).Limit(limit).Offset((offset - 1) * limit).Find(&CVs)
+	log.Println("CVs:", CVs)
+	log.Println("error:", result.Error)
+	return CVs, result.Error
+}
+
 func SetCV(cv *CV) error {
 	err := Db.Model(&CV{}).Save(cv).Error
 	if err != nil {
@@ -443,4 +477,40 @@ func DeleteCVByID(id int) error {
 	}
 
 	return nil
+}
+
+func GetCountDegree(limit int) (map[string]int, error) {
+	var degrees []string
+	result := Db.Model(&Education{}).Limit(limit).Pluck("degree", &degrees)
+	log.Println("degrees:", degrees)
+	if result.Error != nil {
+		log.Println("error:", result.Error)
+	}
+	degreeMap := make(map[string]int)
+	for _, v := range degrees {
+		if _, ok := degreeMap[v]; !ok {
+			degreeMap[v] = 1
+		} else {
+			degreeMap[v] += 1
+		}
+	}
+	return degreeMap, result.Error
+}
+
+func GetCountWorkingyears(limit int) (map[int]int, error) {
+	var workingYears []int
+	result := Db.Model(&CV{}).Limit(limit).Pluck("working_years", &workingYears)
+	log.Println("working_years:", workingYears)
+	if result.Error != nil {
+		log.Println("error:", result.Error)
+	}
+	workingYearsMap := make(map[int]int)
+	for _, v := range workingYears {
+		if _, ok := workingYearsMap[v]; !ok {
+			workingYearsMap[v] = 1
+		} else {
+			workingYearsMap[v] += 1
+		}
+	}
+	return workingYearsMap, result.Error
 }

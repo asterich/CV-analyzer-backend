@@ -21,22 +21,13 @@ func InitRouter() *gin.Engine {
 		api_v1.POST("/cv/upload/multi", v1.UploadMultiCV)
 		api_v1.POST("/positions/upload", v1.UploadPosition)
 
+		api_v1.GET("/cv", v1.GetCV)
 		// cv
-		api_v1.GET("/cv/filename", v1.GetCVByFilename)
-		api_v1.GET("/cv/name", v1.GetCVsByName)
-		api_v1.GET("/cv/degree", v1.GetCVsByDegree)
-		api_v1.GET("/cv/working_years", v1.GetCVsGreaterThanWorkingYears)
 		api_v1.DELETE("/cv/filename/:filename", v1.DeleteCVByFilename)
 		api_v1.DELETE("/cv/id/:id", v1.DeleteCVByID)
 
 		// position
-		api_v1.GET("/all_positions", v1.GetAllPositions)
-		api_v1.GET("/positions/name", v1.GetPositionsByName)
-		// api_v1.GET("/positions/company", v1.GetPositionsByCompany)
-		// api_v1.GET("/positions/department", v1.GetPositionsByDepartment)
-		api_v1.GET("/positions/degree", v1.GetPositionsByDegree)
-		api_v1.GET("/positions/major", v1.GetPositionsByMajor)
-		api_v1.GET("/positions/working_years", v1.GetPositionsByWorkingYears)
+		api_v1.GET("/positions", v1.GetPositions)
 		api_v1.DELETE("/positions/id/:id", v1.DeletePosition)
 
 		//for visualize
