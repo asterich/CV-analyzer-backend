@@ -19,7 +19,10 @@ func convertYearMonthStringToIntPair(yearMonth string) (int, int) {
 	if err != nil {
 		t, err = time.Parse("2006.1.2", yearMonth)
 		if err != nil {
-			return 0, 0
+			t, err = time.Parse("2006-1-2", yearMonth)
+			if err != nil {
+				t, err = time.Parse("2006/1/2", yearMonth)
+			}
 		}
 	}
 	return t.Year(), int(t.Month())
