@@ -75,6 +75,7 @@ type CV struct {
 	Filename              string `gorm:"type:varchar(64)" json:"filename"`
 	Name                  string `gorm:"type:varchar(16)" json:"name"`
 	Age                   uint64 `gorm:"type:uint" json:"age"`
+	Birthday              string `gorm:"type:varchar(20)" json:"birthday"`
 	ContactInfo           `gorm:"embedded"`
 	Degree                string                 `gorm:"type:varchar(20)" json:"degree"`
 	WorkingYears          uint64                 `gorm:"type:uint" json:"working_years"` // WorkingYears is extracted from work experience
