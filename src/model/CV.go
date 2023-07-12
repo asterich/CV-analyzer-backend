@@ -2,6 +2,7 @@ package model
 
 import (
 	"log"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -259,7 +260,7 @@ func GetCVLesserThanAge(age int, limit int, offset int) ([]CV, error) {
 
 func GetCVsByName(name string, limit int, offset int) ([]CV, error) {
 	var cvs []CV
-	err := Db.Model(&CV{}).Where("name = ?", name).
+	err := Db.Model(&CV{}).Where("name LIKE ?", name).
 		Offset((offset - 1) * limit).Limit(limit).Find(&cvs).Error
 	if err == gorm.ErrRecordNotFound {
 		log.Println("CV not found, err:", err.Error())
@@ -283,17 +284,40 @@ func GetCVsByName(name string, limit int, offset int) ([]CV, error) {
 	return cvs_for_return, nil
 }
 
+var degreeMap = map[string][]string{
+	"高中":  {"高中"},
+	"专科":  {"专科", "大专", "中专"},
+	"本科":  {"本科", "学士"},
+	"硕士":  {"硕士", "研究生"},
+	"博士":  {"博士"},
+	"中专":  {"中专"},
+	"大专":  {"大专"},
+	"学士":  {"学士", "本科"},
+	"研究生": {"研究生", "硕士"},
+}
+
 func GetCVsByDegree(degree string, limit int, offset int) ([]CV, error) {
 	var cvs []CV
-	err := Db.Model(&CV{}).Where("degree = ?", degree).
-		Offset((offset - 1) * limit).Limit(limit).Find(&cvs).Error
+	degree = strings.TrimSpace(degree)
+	degreeArr := degreeMap[degree]
+	var err error
+	for _, d := range degreeArr {
+		var tmp_cvs []CV
+		err = Db.Model(&CV{}).Where("degree LIKE ?", d).
+			Offset((offset - 1) * limit).Limit(limit).Find(&tmp_cvs).Error
+		if err == gorm.ErrRecordNotFound {
+			log.Println("CV not found, err:", err.Error())
+			continue
+		}
+		if err != nil {
+			log.Println("Failed to get CV by degree, err:", err.Error())
+			return nil, err
+		}
+		cvs = append(cvs, tmp_cvs...)
+	}
 	if err == gorm.ErrRecordNotFound {
 		log.Println("CV not found, err:", err.Error())
 		return []CV{}, err
-	}
-	if err != nil {
-		log.Println("Failed to get CV by degree, err:", err.Error())
-		return nil, err
 	}
 
 	cvs_for_return := []CV{}
