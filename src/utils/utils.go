@@ -42,6 +42,7 @@ func init() {
 	}
 	LoadServer(file)
 	LoadDb(file)
+	LoadUpload(file)
 }
 
 func LoadServer(file *ini.File) {
@@ -62,4 +63,5 @@ func LoadDb(file *ini.File) {
 func LoadUpload(file *ini.File) {
 	var uploadSection = file.Section("upload")
 	UploadPath = uploadSection.Key("UploadPath").String()
+	log.Printf("UploadPath: %s\n", UploadPath)
 }
