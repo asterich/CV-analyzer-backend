@@ -29,7 +29,49 @@ func convertYearMonthStringToIntPair(yearMonth string) (int, int) {
 }
 
 func ExtractDegreeFromEducations(educations []model.Education) string {
-	// TODO: extract degree from educations
+	degreeList := []string{"博士", "硕士", "学士", "本科", "专科", "大专", "中专", "高中", "初中", "小学"}
+	for _, education := range educations {
+		if degree := education.Degree; true {
+			for _, degreeWord := range degreeList {
+				if strings.Contains(degree, degreeWord) {
+					return degreeWord
+				}
+			}
+		}
+		if major := education.Major; true {
+			for _, degree := range degreeList {
+				if strings.Contains(major, degree) {
+					return degree
+				}
+			}
+		}
+		if school := education.School; true {
+			for _, degree := range degreeList {
+				if strings.Contains(school, degree) {
+					return degree
+				}
+			}
+			zhuankeWords := []string{"职业", "技术", "中专"}
+			for _, zhuankeWord := range zhuankeWords {
+				if strings.Contains(school, zhuankeWord) {
+					return "中专"
+				}
+			}
+			universityWords := []string{"大学", "学院"}
+			for _, universityWord := range universityWords {
+				if strings.Contains(school, universityWord) {
+					return "本科"
+				}
+			}
+			highSchoolWords := []string{"中"}
+			for _, highSchoolWord := range highSchoolWords {
+				if strings.Contains(school, highSchoolWord) {
+					return "高中"
+				}
+			}
+		}
+	}
+
 	return ""
 }
 
