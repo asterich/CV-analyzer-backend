@@ -401,6 +401,14 @@ func GetCVsGreaterThanWorkingYears(workingYears int, limit int, offset int) ([]C
 	return cvs_for_return, nil
 }
 
+func GetAllCVs(limit int, offset int) ([]CV, error) {
+	var CVs []CV
+	result := Db.Model(&CV{}).Limit(limit).Offset((offset - 1) * limit).Find(&CVs)
+	log.Println("CVs:", CVs)
+	log.Println("error:", result.Error)
+	return CVs, result.Error
+}
+
 func SetCV(cv *CV) error {
 	err := Db.Model(&CV{}).Save(cv).Error
 	if err != nil {

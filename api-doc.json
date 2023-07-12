@@ -11,27 +11,98 @@
 		}
 	],
 	"paths": {
-		"/cv/id":{
+		"/cv": {
 			"get": {
-				"summary": "Retrieve a CV by id",
+				"summary": "获取CV,支持单靠ID和Filename搜索(返回单个CV)和靠degree,workingYears(返回多个CV),age取交集搜索以及在所有参数为空时获取所有CV(返回多个CV)",
 				"parameters": [
 					{
 						"in": "query",
 						"name": "id",
-						"required": true,
+						"required": false,
 						"schema": {
 							"type": "string"
 						},
 						"description": "The id of the CV."
+					},
+					{
+						"in": "query",
+						"name": "filename",
+						"required": false,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The filename of the CV."
+					},
+					{
+						"in": "query",
+						"name": "name",
+						"required": false,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The name to search for CVs."
+					},
+					{
+						"in": "query",
+						"name": "degree",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The degree to search for CVs"
+					},
+					{
+						"in": "query",
+						"name": "workingYears",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						},
+						"description": "The minimum number of working years to search for CVs."
+					},
+					{
+						"in": "query",
+						"name": "age",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						},
+						"description": "The maxmum number of age to search for CVs."
+					},
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": false,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of CVs to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": false,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of CVs to return."
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "A CV object",
+						"description": "A CV object or CVs Object",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/CV"
+									"properties": {
+										"type": "array",
+										"items": {
+											"$ref": "#/components/schemas/CV"
+										}
+									},
+									"additionalProperties": {
+										"$ref": "#/components/schemas/CV"
+									}
 								}
 							}
 						}
@@ -43,9 +114,11 @@
 						"description": "Internal server error"
 					}
 				}
-			},
+			}
+		},
+		"/cv/id": {
 			"delete": {
-				"summary": "Delete a CV by id",
+				"summary": "通过ID删除CV",
 				"parameters": [
 					{
 						"in": "path",
@@ -71,61 +144,8 @@
 			}
 		},
 		"/cv/filename": {
-			"get": {
-				"summary": "Retrieve a CV by filename",
-				"parameters": [
-					{
-						"in": "query",
-						"name": "filename",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The filename of the CV."
-					},
-					{
-						"in": "query",
-						"name": "pagesize",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The number of CVs to return."
-					},
-					{
-						"in": "query",
-						"name": "pagenum",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The page number of CVs to return."
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "An array of CV objects",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "array",
-									"items": {
-										"$ref": "#/components/schemas/CV"
-									}
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "CV not found"
-					},
-					"500": {
-						"description": "Internal server error"
-					}
-				}
-			},
 			"delete": {
-				"summary": "Delete a CV by filename",
+				"summary": "通过文件名删除CV",
 				"parameters": [
 					{
 						"in": "path",
@@ -147,229 +167,9 @@
 				}
 			}
 		},
-		"/cv/name": {
-			"get": {
-				"summary": "Retrieve CVs by name",
-				"parameters": [
-					{
-						"in": "query",
-						"name": "name",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The name to search for CVs."
-					},
-					{
-						"in": "query",
-						"name": "pagesize",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The number of CVs to return."
-					},
-					{
-						"in": "query",
-						"name": "pagenum",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The page number of CVs to return."
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "An array of CV objects",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "array",
-									"items": {
-										"$ref": "#/components/schemas/CV"
-									}
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "CV not found"
-					},
-					"500": {
-						"description": "Internal server error"
-					}
-				}
-			}
-		},
-		"/cv/degree": {
-			"get": {
-				"summary": "Retrieve CVs by degree",
-				"parameters": [
-					{
-						"in": "query",
-						"name": "degree",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "Internal server error"
-					},
-					{
-						"in": "query",
-						"name": "pagesize",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The number of CVs to return."
-					},
-					{
-						"in": "query",
-						"name": "pagenum",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The page number of CVs to return."
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "An array of CV objects",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "array",
-									"items": {
-										"$ref": "#/components/schemas/CV"
-									}
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "CV not found"
-					},
-					"500": {
-						"description": "Internal server error"
-					}
-				}
-			}
-		},
-		"/cv/working_years": {
-			"get": {
-				"summary": "Retrieve CVs by a minimum number of working years",
-				"parameters": [
-					{
-						"in": "query",
-						"name": "workingYears",
-						"required": true,
-						"schema": {
-							"type": "integer"
-						},
-						"description": "The minimum number of working years to search for CVs."
-					},
-					{
-						"in": "query",
-						"name": "pagesize",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The number of CVs to return."
-					},
-					{
-						"in": "query",
-						"name": "pagenum",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The page number of CVs to return."
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "An array of CV objects",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "array",
-									"items": {
-										"$ref": "#/components/schemas/CV"
-									}
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "CV not found"
-					},
-					"500": {
-						"description": "Internal server error"
-					}
-				}
-			}
-		},
-		"/cv/age": {
-			"get": {
-				"summary": "Retrieve CVs by a maxmum number of age",
-				"parameters": [
-					{
-						"in": "query",
-						"name": "workingYears",
-						"required": true,
-						"schema": {
-							"type": "integer"
-						},
-						"description": "The maxmum number of age to search for CVs."
-					},
-					{
-						"in": "query",
-						"name": "pagesize",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The number of CVs to return."
-					},
-					{
-						"in": "query",
-						"name": "pagenum",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The page number of CVs to return."
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "An array of CV objects",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "array",
-									"items": {
-										"$ref": "#/components/schemas/CV"
-									}
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "CV not found"
-					},
-					"500": {
-						"description": "Internal server error"
-					}
-				}
-			}
-		},
 		"/cv/upload": {
 			"post": {
-				"summary": "Upload a CV",
+				"summary": "上传CV",
 				"requestBody": {
 					"content": {
 						"multipart/form-data": {
@@ -395,9 +195,9 @@
 				}
 			}
 		},
-		"/all_positions": {
+		"/positions": {
 			"get": {
-				"summary": "Retrieve all positions",
+				"summary": "通过不同的关键词(name,degree,major,workingyears)获取positions,没有关键词则获取所有positions",
 				"parameters": [
 					{
 						"in": "query",
@@ -416,29 +216,7 @@
 							"type": "string"
 						},
 						"description": "The page number of CVs to return."
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "An array of positions",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Position"
-								}
-							}
-						}
 					},
-					"500": {
-						"description": "Internal server error"
-					}
-				}
-			}
-		},
-		"/positions/name": {
-			"get": {
-				"summary": "Retrieve positions by name",
-				"parameters": [
 					{
 						"in": "query",
 						"name": "name",
@@ -449,188 +227,12 @@
 					},
 					{
 						"in": "query",
-						"name": "pagesize",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The number of CVs to return."
-					},
-					{
-						"in": "query",
-						"name": "pagenum",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The page number of CVs to return."
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "An array of positions",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Position"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error"
-					}
-				}
-			}
-		},
-		"/positions/company": {
-			"get": {
-				"summary": "Retrieve positions by company name",
-				"parameters": [
-					{
-						"in": "query",
-						"name": "company",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "query",
-						"name": "pagesize",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The number of CVs to return."
-					},
-					{
-						"in": "query",
-						"name": "pagenum",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The page number of CVs to return."
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "An array of positions",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Position"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error"
-					}
-				}
-			}
-		},
-		"/positions/department": {
-			"get": {
-				"summary": "Retrieve positions by department",
-				"parameters": [
-					{
-						"in": "query",
-						"name": "department",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "query",
-						"name": "pagesize",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The number of CVs to return."
-					},
-					{
-						"in": "query",
-						"name": "pagenum",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The page number of CVs to return."
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "An array of positions",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Position"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error"
-					}
-				}
-			}
-		},
-		"/positions/major": {
-			"get": {
-				"summary": "Retrieve positions by major",
-				"parameters": [
-					{
-						"in": "query",
 						"name": "major",
 						"required": true,
 						"schema": {
 							"type": "string"
 						}
 					},
-					{
-						"in": "query",
-						"name": "pagesize",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The number of CVs to return."
-					},
-					{
-						"in": "query",
-						"name": "pagenum",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The page number of CVs to return."
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "An array of positions",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Position"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error"
-					}
-				}
-			}
-		},
-		"/positions/degree": {
-			"get": {
-				"summary": "Retrieve positions by degree",
-				"parameters": [
 					{
 						"in": "query",
 						"name": "degree",
@@ -641,69 +243,11 @@
 					},
 					{
 						"in": "query",
-						"name": "pagesize",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The number of CVs to return."
-					},
-					{
-						"in": "query",
-						"name": "pagenum",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The page number of CVs to return."
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "An array of positions",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Position"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Internal server error"
-					}
-				}
-			}
-		},
-		"/positions/working_years": {
-			"get": {
-				"summary": "Retrieve positions by a minimum number of working years",
-				"parameters": [
-					{
-						"in": "query",
 						"name": "working_years",
 						"required": true,
 						"schema": {
 							"type": "integer"
 						}
-					},
-					{
-						"in": "query",
-						"name": "pagesize",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The number of CVs to return."
-					},
-					{
-						"in": "query",
-						"name": "pagenum",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "The page number of CVs to return."
 					}
 				],
 				"responses": {
@@ -725,7 +269,7 @@
 		},
 		"/positions/id": {
 			"delete": {
-				"summary": "Delete a position by id",
+				"summary": "通过positionID删除position",
 				"parameters": [
 					{
 						"in": "path",
@@ -748,7 +292,7 @@
 		},
 		"/count_degree": {
 			"get": {
-				"summary": "Retrieve degrees count dict",
+				"summary": "获取不同学历的数量",
 				"parameters": [
 					{
 						"in": "query",
@@ -779,7 +323,7 @@
 		},
 		"/count_workingyears": {
 			"get": {
-				"summary": "Retrieve workingyears count dict",
+				"summary": "获取不同工作年份的数量",
 				"parameters": [
 					{
 						"in": "query",
@@ -829,7 +373,7 @@
 					}
 				}
 			},
-			"Degree":{
+			"Degree": {
 				"type": "object",
 				"properties": {
 					"code": {
@@ -840,18 +384,18 @@
 					},
 					"data": {
 						"type": "object",
-                		"properties": {
-                  			"mapData": {
-                    			"type": "object",
-                    			"additionalProperties": {
-									"type":"string"
+						"properties": {
+							"mapData": {
+								"type": "object",
+								"additionalProperties": {
+									"type": "string"
 								}
-       		           		}
+							}
 						}
 					}
 				}
 			},
-			"Workingyears":{
+			"Workingyears": {
 				"type": "object",
 				"properties": {
 					"code": {
@@ -862,13 +406,13 @@
 					},
 					"data": {
 						"type": "object",
-                		"properties": {
-                  			"mapData": {
-                    			"type": "object",
-                    			"additionalProperties": {
-									"type":"int"	
+						"properties": {
+							"mapData": {
+								"type": "object",
+								"additionalProperties": {
+									"type": "int"
 								}
-        	          		}
+							}
 						}
 					}
 				}
@@ -893,4 +437,4 @@
 			}
 		}
 	}
-}	
+}
