@@ -312,6 +312,61 @@
 				}
 			}
 		},
+		"/cv/age": {
+			"get": {
+				"summary": "Retrieve CVs by a maxmum number of age",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "workingYears",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						},
+						"description": "The maxmum number of age to search for CVs."
+					},
+					{
+						"in": "query",
+						"name": "pagesize",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The number of CVs to return."
+					},
+					{
+						"in": "query",
+						"name": "pagenum",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The page number of CVs to return."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array of CV objects",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/CV"
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "CV not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
 		"/cv/upload": {
 			"post": {
 				"summary": "Upload a CV",

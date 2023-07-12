@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"log"
 	"os"
 	"strconv"
 
@@ -138,6 +139,34 @@ func GetCVsGreaterThanWorkingYears(c *gin.Context) {
 	})
 }
 
+func GetCVsLesserThanAge(c *gin.Context) {
+	ageStr := c.Query("age")
+	age, _ := strconv.Atoi(ageStr)
+	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	data, err := model.GetCVLesserThanAge(age, pagesize, page)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(404, gin.H{
+				"code": 404,
+				"msg":  "CV not found",
+			})
+			return
+		} else {
+			c.JSON(500, gin.H{
+				"code": 500,
+				"msg":  "Internal server error",
+			})
+			return
+		}
+	}
+	c.JSON(200, gin.H{
+		"code": 200,
+		"msg":  "success",
+		"data": data,
+	})
+}
+
 func DeleteCVByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, _ := strconv.Atoi(idStr)
@@ -206,3 +235,40 @@ func DeleteCVByFilename(c *gin.Context) {
 
 // TODO: Add more APIs
 // There is no need to add APIs for creating
+func GetCountDegree(c *gin.Context) {
+	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "50"))
+	log.Default().Println("pagesize: ", pagesize)
+	degrees, err := model.GetCountDegree(pagesize)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"code": 500,
+			"msg":  "Internal server error",
+		})
+	}
+
+	log.Default().Println("degrees: ", degrees)
+	c.JSON(200, gin.H{
+		"code": 200,
+		"msg":  "success",
+		"data": degrees,
+	})
+}
+
+func GetCountWorkingyears(c *gin.Context) {
+	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "50"))
+	log.Default().Println("pagesize: ", pagesize)
+	workyears, err := model.GetCountWorkingyears(pagesize)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"code": 500,
+			"msg":  "Internal server error",
+		})
+	}
+
+	log.Default().Println("workingyears: ", workyears)
+	c.JSON(200, gin.H{
+		"code": 200,
+		"msg":  "success",
+		"data": workyears,
+	})
+}

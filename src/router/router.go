@@ -26,6 +26,10 @@ func InitRouter() *gin.Engine {
 		api_v1.GET("/cv/name", v1.GetCVsByName)
 		api_v1.GET("/cv/degree", v1.GetCVsByDegree)
 		api_v1.GET("/cv/working_years", v1.GetCVsGreaterThanWorkingYears)
+
+		//todo
+		api_v1.GET("/cv/age", v1.GetCVsLesserThanAge)
+
 		api_v1.DELETE("/cv/filename/:filename", v1.DeleteCVByFilename)
 		api_v1.DELETE("/cv/id/:id", v1.DeleteCVByID)
 
