@@ -12,8 +12,8 @@ type ContactInfo struct {
 }
 
 type Duration struct {
-	Begin uint64 `gorm:"type:uint" json:"start_time"`
-	End   uint64 `gorm:"type:uint" json:"end_time"`
+	Begin string `gorm:"type:varchar(20)" json:"start_time"`
+	End   string `gorm:"type:varchar(20)" json:"end_time"`
 }
 
 type Education struct {
