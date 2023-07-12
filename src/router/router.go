@@ -17,9 +17,9 @@ func InitRouter() *gin.Engine {
 
 	{
 		// upload file
-		api_v1.POST("/cv/upload", v1.UploadCV)
-		api_v1.POST("/cv/upload/multi", v1.UploadMultiCV)
-		api_v1.POST("/positions/upload", v1.UploadPosition)
+		api_v1.POST("/cv", v1.UploadCV)
+		api_v1.POST("/cv/multi", v1.UploadMultiCV)
+		api_v1.POST("/positions", v1.UploadPosition)
 
 		api_v1.GET("/cv", v1.GetCV)
 		// cv

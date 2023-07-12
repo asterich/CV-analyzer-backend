@@ -114,6 +114,32 @@
 						"description": "Internal server error"
 					}
 				}
+			},
+			"post": {
+				"summary": "上传CV",
+				"requestBody": {
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"file": {
+										"type": "string",
+										"format": "binary"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "CV successfully uploaded"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
 			}
 		},
 		"/cv/id": {
@@ -167,9 +193,9 @@
 				}
 			}
 		},
-		"/cv/upload": {
+		"/cv/multi": {
 			"post": {
-				"summary": "上传CV",
+				"summary": "上传多份CV",
 				"requestBody": {
 					"content": {
 						"multipart/form-data": {
@@ -260,6 +286,32 @@
 								}
 							}
 						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"post": {
+				"summary": "上传Positions",
+				"requestBody": {
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"file": {
+										"type": "string",
+										"format": "binary"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "CV successfully uploaded"
 					},
 					"500": {
 						"description": "Internal server error"
