@@ -26,8 +26,8 @@ func UploadCV(c *gin.Context) {
 	}
 
 	filename := filepath.Base(file.Filename)
-	log.Printf("filename: %s\n", utils.UploadPath+"/"+filename)
-	if err := c.SaveUploadedFile(file, utils.UploadPath+"/"+filename); err != nil {
+	log.Printf("filename: %s\n", utils.UploadPath+"/cv/"+filename)
+	if err := c.SaveUploadedFile(file, utils.UploadPath+"/cv/"+filename); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": 500,
 			"msg":  "Internal server error",
