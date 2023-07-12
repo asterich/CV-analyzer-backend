@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"encoding/json"
 	"log"
 	"strconv"
 
@@ -13,7 +12,8 @@ func GetPositions(c *gin.Context) {
 	name := c.Query("name")
 	major := c.Query("major")
 	degree := c.Query("degree")
-	workingYears := c.Query("working_years")
+	workingYearsBegin := c.Query("working_years_begin")
+	workingYearsEnd := c.Query("working_years_end")
 
 	if name != "" {
 		GetPositionsByName(c)
@@ -21,7 +21,7 @@ func GetPositions(c *gin.Context) {
 		GetPositionsByMajor(c)
 	} else if degree != "" {
 		GetPositionsByDegree(c)
-	} else if workingYears != "" {
+	} else if workingYearsBegin != "" || workingYearsEnd != "" {
 		GetPositionsByWorkingYears(c)
 	} else {
 		GetAllPositions(c)
@@ -147,8 +147,9 @@ func GetPositionsByDegree(c *gin.Context) {
 }
 
 func GetPositionsByWorkingYears(c *gin.Context) {
-	var workingYears model.Duration
-	json.Unmarshal([]byte(c.Query("working_years")), &workingYears)
+	var workingYears model.IntDuration
+	workingYears.Begin, _ = strconv.Atoi(c.DefaultQuery("working_years_begin", "0"))
+	workingYears.End, _ = strconv.Atoi(c.DefaultQuery("working_years_end", "999"))
 	pagesize, _ := strconv.Atoi(c.DefaultQuery("pagesize", "10"))
 	page, _ := strconv.Atoi(c.DefaultQuery("pagenum", "1"))
 	positions, err := model.GetPositionsInRangeOfWorkingYears(workingYears, pagesize, page)

@@ -84,7 +84,7 @@ func GetPositionsByDegree(degree string, limit int, offset int) ([]Position, err
 	return positions, result.Error
 }
 
-func GetPositionsInRangeOfWorkingYears(workingYears Duration, limit int, offset int) ([]Position, error) {
+func GetPositionsInRangeOfWorkingYears(workingYears IntDuration, limit int, offset int) ([]Position, error) {
 	var positions []Position
 	result := Db.Model(&Position{}).Where("working_years between ? and ?", workingYears.Begin, workingYears.End).
 		Limit(limit).Offset((offset - 1) * limit).Find(&positions)
