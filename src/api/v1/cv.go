@@ -87,6 +87,15 @@ func GetCV(c *gin.Context) {
 		}
 		if returncv != nil {
 			returncv = intersectCVs(returncv, data)
+			if len(returncv) == 0 {
+				c.JSON(404, gin.H{
+					"code": 404,
+					"msg":  "CV not found",
+				})
+				return
+			}
+		} else {
+			returncv = data
 		}
 	}
 

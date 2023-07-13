@@ -2,6 +2,7 @@ package model
 
 import (
 	"log"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -12,8 +13,8 @@ type ContactInfo struct {
 }
 
 type Duration struct {
-	Begin uint64 `gorm:"type:uint" json:"start_time"`
-	End   uint64 `gorm:"type:uint" json:"end_time"`
+	Begin string `gorm:"type:varchar(20)" json:"start_time"`
+	End   string `gorm:"type:varchar(20)" json:"end_time"`
 }
 
 type Education struct {
@@ -75,6 +76,7 @@ type CV struct {
 	Filename              string `gorm:"type:varchar(64)" json:"filename"`
 	Name                  string `gorm:"type:varchar(16)" json:"name"`
 	Age                   uint64 `gorm:"type:uint" json:"age"`
+	Birthday              string `gorm:"type:varchar(20)" json:"birthday"`
 	ContactInfo           `gorm:"embedded"`
 	Degree                string                 `gorm:"type:varchar(20)" json:"degree"`
 	WorkingYears          uint64                 `gorm:"type:uint" json:"working_years"` // WorkingYears is extracted from work experience
@@ -139,73 +141,6 @@ func constructCVArrayFields(cv *CV) error {
 	}
 	return nil
 }
-
-// func saveCVArrayFields(cv *CV) error {
-// 	for i := range cv.Educations {
-// 		cv.Educations[i].CVId = cv.ID
-// 		err := Db.Create(&cv.Educations[i]).Error
-// 		if err != nil {
-// 			log.Println("Failed to save education, err:", err.Error())
-// 			return err
-// 		}
-// 	}
-
-// 	for i := range cv.WorkExperiences {
-// 		cv.WorkExperiences[i].CVId = cv.ID
-// 		err := Db.Create(&cv.WorkExperiences[i]).Error
-// 		if err != nil {
-// 			log.Println("Failed to save work experience, err:", err.Error())
-// 			return err
-// 		}
-// 	}
-
-// 	for i := range cv.SchoolExperiences {
-// 		cv.SchoolExperiences[i].CVId = cv.ID
-// 		err := Db.Create(&cv.SchoolExperiences[i]).Error
-// 		if err != nil {
-// 			log.Println("Failed to save school experience, err:", err.Error())
-// 			return err
-// 		}
-// 	}
-
-// 	for i := range cv.InternshipExperiences {
-// 		cv.InternshipExperiences[i].CVId = cv.ID
-// 		err := Db.Create(&cv.InternshipExperiences[i]).Error
-// 		if err != nil {
-// 			log.Println("Failed to save internship experience, err:", err.Error())
-// 			return err
-// 		}
-// 	}
-
-// 	for i := range cv.ProjectExperiences {
-// 		cv.ProjectExperiences[i].CVId = cv.ID
-// 		err := Db.Create(&cv.ProjectExperiences[i]).Error
-// 		if err != nil {
-// 			log.Println("Failed to save project experience, err:", err.Error())
-// 			return err
-// 		}
-// 	}
-
-// 	for i := range cv.Awards {
-// 		cv.Awards[i].CVId = cv.ID
-// 		err := Db.Create(&cv.Awards[i]).Error
-// 		if err != nil {
-// 			log.Println("Failed to save award, err:", err.Error())
-// 			return err
-// 		}
-// 	}
-
-// 	for i := range cv.Skills {
-// 		cv.Skills[i].CVId = cv.ID
-// 		err := Db.Create(&cv.Skills[i]).Error
-// 		if err != nil {
-// 			log.Println("Failed to save skill, err:", err.Error())
-// 			return err
-// 		}
-// 	}
-
-// 	return nil
-// }
 
 func deleteCVArrayFields(cv *CV) error {
 	// TODO: check whether it's right
@@ -277,7 +212,7 @@ func GetCVById(id int) (CV, error) {
 
 func GetCVByFilename(path string, limit int, offset int) (CV, error) {
 	var cv CV
-	err := Db.Model(&CV{}).Where("Filename = ?", path).
+	err := Db.Model(&CV{}).Where("filename = ?", path).
 		Offset((offset - 1) * limit).Limit(limit).First(&cv).Error
 	if err == gorm.ErrRecordNotFound {
 		log.Println("CV not found, err:", err.Error())
@@ -299,7 +234,7 @@ func GetCVByFilename(path string, limit int, offset int) (CV, error) {
 
 func GetCVLesserThanAge(age int, limit int, offset int) ([]CV, error) {
 	var cvs []CV
-	err := Db.Model(&CV{}).Where("Age <= ?", age).
+	err := Db.Model(&CV{}).Where("age <= ?", age).
 		Offset((offset - 1) * limit).Limit(limit).Find(&cvs).Error
 	if err == gorm.ErrRecordNotFound {
 		log.Println("CV not found, err:", err.Error())
@@ -325,7 +260,7 @@ func GetCVLesserThanAge(age int, limit int, offset int) ([]CV, error) {
 
 func GetCVsByName(name string, limit int, offset int) ([]CV, error) {
 	var cvs []CV
-	err := Db.Model(&CV{}).Where("Name = ?", name).
+	err := Db.Model(&CV{}).Where("name LIKE ?", name).
 		Offset((offset - 1) * limit).Limit(limit).Find(&cvs).Error
 	if err == gorm.ErrRecordNotFound {
 		log.Println("CV not found, err:", err.Error())
@@ -349,17 +284,40 @@ func GetCVsByName(name string, limit int, offset int) ([]CV, error) {
 	return cvs_for_return, nil
 }
 
+var degreeMap = map[string][]string{
+	"高中":  {"高中"},
+	"专科":  {"专科", "大专", "中专"},
+	"本科":  {"本科", "学士"},
+	"硕士":  {"硕士", "研究生"},
+	"博士":  {"博士"},
+	"中专":  {"中专"},
+	"大专":  {"大专"},
+	"学士":  {"学士", "本科"},
+	"研究生": {"研究生", "硕士"},
+}
+
 func GetCVsByDegree(degree string, limit int, offset int) ([]CV, error) {
 	var cvs []CV
-	err := Db.Model(&CV{}).Where("Degree = ?", degree).
-		Offset((offset - 1) * limit).Limit(limit).Find(&cvs).Error
+	degree = strings.TrimSpace(degree)
+	degreeArr := degreeMap[degree]
+	var err error
+	for _, d := range degreeArr {
+		var tmp_cvs []CV
+		err = Db.Model(&CV{}).Where("degree LIKE ?", d).
+			Offset((offset - 1) * limit).Limit(limit).Find(&tmp_cvs).Error
+		if err == gorm.ErrRecordNotFound {
+			log.Println("CV not found, err:", err.Error())
+			continue
+		}
+		if err != nil {
+			log.Println("Failed to get CV by degree, err:", err.Error())
+			return nil, err
+		}
+		cvs = append(cvs, tmp_cvs...)
+	}
 	if err == gorm.ErrRecordNotFound {
 		log.Println("CV not found, err:", err.Error())
 		return []CV{}, err
-	}
-	if err != nil {
-		log.Println("Failed to get CV by degree, err:", err.Error())
-		return nil, err
 	}
 
 	cvs_for_return := []CV{}
@@ -377,7 +335,7 @@ func GetCVsByDegree(degree string, limit int, offset int) ([]CV, error) {
 
 func GetCVsGreaterThanWorkingYears(workingYears int, limit int, offset int) ([]CV, error) {
 	var cvs []CV
-	err := Db.Model(&CV{}).Where("WorkingYears >= ?", workingYears).
+	err := Db.Model(&CV{}).Where("working_years >= ?", workingYears).
 		Offset((offset - 1) * limit).Limit(limit).Find(&cvs).Error
 	if err == gorm.ErrRecordNotFound {
 		log.Println("CV not found, err:", err.Error())

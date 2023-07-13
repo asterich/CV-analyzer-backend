@@ -269,7 +269,15 @@
 					},
 					{
 						"in": "query",
-						"name": "working_years",
+						"name": "working_years_begin",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"in": "query",
+						"name": "working_years_end",
 						"required": true,
 						"schema": {
 							"type": "integer"
@@ -462,7 +470,7 @@
 							"mapData": {
 								"type": "object",
 								"additionalProperties": {
-									"type": "int"
+									"type": "integer"
 								}
 							}
 						}
