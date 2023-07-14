@@ -1,7 +1,9 @@
 package converter
 
 import (
-	"path/filepath"
+	"encoding/json"
+	"os"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -91,54 +93,29 @@ func ExtractWorkingYearsFromWorkExperiences(workExperiences []model.WorkExperien
 func ConvertDocToCV(path string) (model.CV, error) {
 
 	// TODO: convert the file to CV
+	err := exec.Command("python3", "scripts/convert_file.py", "--input_file", path).Run()
+	if err != nil {
+		return model.CV{}, err
+	}
+
+	var imageFiles []string
+	// open image_files.json
+	imageFilesJsonFile, err := os.Open("tmp/image_files.json")
+	if err != nil {
+		return model.CV{}, err
+	}
+	defer imageFilesJsonFile.Close()
+	var imageFilesJson []byte
+	imageFilesJsonFile.Read(imageFilesJson)
+	json.Unmarshal(imageFilesJson, &imageFiles)
+	for _, imageFile := range imageFiles {
+		// TODO: OCR and SER the image file
+		_ = imageFile
+	}
 
 	// return model.CV{}, nil
 	// TODO: construct test data here
-	return model.CV{
-		Filename: filepath.Base(path),
-		Name:     "test",
-		ContactInfo: model.ContactInfo{
-			Email: "fuckers@gmail.com",
-			Tel:   "1234567890",
-		},
-		Age:    22,
-		Degree: "本科",
-		Educations: []model.Education{
-			{
-				Duration: model.Duration{
-					Begin: "",
-					End:   "18",
-				},
-				School: "HUST",
-			},
-			{
-				Duration: model.Duration{
-					Begin: "16",
-					End:   "18",
-				},
-				School: "HUST",
-			},
-			{
-				Duration: model.Duration{
-					Begin: "16",
-					End:   "18",
-				},
-				School: "HUST",
-			},
-		},
-		WorkExperiences: []model.WorkExperience{
-			{
-				Duration: model.Duration{
-					Begin: "996",
-					End:   "114514",
-				},
-				Experience: model.Experience{
-					CompanyOrOrganization: "Google, LLC.",
-					Position:              "CEO",
-				},
-			},
-		},
-	}, nil
+	return model.CV{}, nil
 }
 
 func ConvertDocToPositions(path string) ([]model.Position, error) {
