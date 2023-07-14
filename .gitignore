@@ -4,3 +4,4 @@ log/
 static/
 upload/
 *.docx
+tmp/
