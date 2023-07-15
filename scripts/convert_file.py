@@ -1,5 +1,6 @@
 import os
 import glob
+import platform
 from pdf2image import convert_from_path
 import argparse
 import json
@@ -7,7 +8,7 @@ import re
 import subprocess
 import msoffice2pdf
 
-print(os.curdir)
+print(os.path.abspath(os.curdir))
 
 parser = argparse.ArgumentParser(description='Convert docx to png')
 parser.add_argument('--input_file', type=str, required=True, help='input file')
@@ -15,7 +16,7 @@ parser.add_argument('--input_file', type=str, required=True, help='input file')
 args = parser.parse_args()
 
 input_file = args.input_file
-output_dir = 'tmp'
+output_dir = './tmp/'
 
 docx_file = input_file
 
@@ -50,10 +51,17 @@ def parse_file_ext(file):
 
 
 image_files = []
+print(input_file)
 
 if parse_file_ext(input_file) in ['.docx', '.doc']:
     # pdf_file = convert_docx_to_pdf(input_file, output_dir)
-    pdf_file = msoffice2pdf.convert(input_file, output_dir, soft=1)
+    print(parse_file_ext(input_file))
+    soft = 0 if platform.system() == 'Windows' else 1
+    print(soft)
+    output_dir = os.path.abspath(output_dir)
+    pdf_file = msoffice2pdf.convert(input_file, output_dir, soft=soft)
+    print("pdf_file:", pdf_file)
+    output_dir = os.path.relpath(output_dir)
     image_files = convert_pdf_to_png(pdf_file, output_dir)
     os.remove(pdf_file)
 elif parse_file_ext(input_file) in ['.pdf']:
