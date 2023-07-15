@@ -66,4 +66,10 @@ require (
 	modernc.org/token v1.0.1 // indirect
 )
 
-require github.com/glebarez/go-sqlite v1.21.1 // indirect
+require (
+	github.com/dslipak/pdf v0.0.1
+	github.com/gin-contrib/cors v1.4.0
+	github.com/glebarez/go-sqlite v1.21.1 // indirect
+	github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80
+	rsc.io/pdf v0.1.1
+)
