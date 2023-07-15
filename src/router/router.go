@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/asterich/CV-analyzer-backend/middleware"
 	v1 "github.com/asterich/CV-analyzer-backend/src/api/v1"
 	"github.com/gin-gonic/gin"
 )
@@ -34,6 +35,8 @@ func InitRouter() *gin.Engine {
 		api_v1.GET("/count_degree", v1.GetCountDegree)
 		api_v1.GET("/count_workingyears", v1.GetCountWorkingyears)
 	}
+
+	r.Use(middleware.CORS())
 
 	return r
 }

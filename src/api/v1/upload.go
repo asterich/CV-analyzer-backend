@@ -26,8 +26,8 @@ func UploadCV(c *gin.Context) {
 	}
 
 	filename := filepath.Base(file.Filename)
-	log.Printf("filename: %s\n", utils.UploadPath+"/cv/"+filename)
-	if err := c.SaveUploadedFile(file, utils.UploadPath+"/cv/"+filename); err != nil {
+	log.Printf("filename: %s\n", utils.UploadPath+"cv/"+filename)
+	if err := c.SaveUploadedFile(file, utils.UploadPath+"cv/"+filename); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": 500,
 			"msg":  "Internal server error",
@@ -35,24 +35,31 @@ func UploadCV(c *gin.Context) {
 		return
 	}
 
-	// TODO: convert the file to CV and save it to the database
-	cv, err := converter.ConvertDocToCV(utils.UploadPath + "/cv/" + filename)
+	absFilename, _ := filepath.Abs(utils.UploadPath + "cv/" + filename)
+	cv, err := converter.ConvertDocToCV(absFilename)
 	if err != nil {
+		log.Printf("Error converting file %s, err = %s\n", utils.UploadPath+"cv/"+filename, err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": 500,
 			"msg":  "Internal server error",
 		})
-		_ = os.Remove(utils.UploadPath + cv.Filename)
+		err = os.Remove(utils.UploadPath + "cv/" + filename)
+		if err != nil {
+			log.Printf("Error removing file %s, err = %s\n", utils.UploadPath+"cv/"+filename, err.Error())
+		}
 		return
 	}
 
+	cv.Filename = utils.UploadPath + "cv/" + filename
 	if err := model.SetCV(&cv); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": 500,
 			"msg":  "Internal server error",
 		})
-		_ = os.Remove(utils.UploadPath + cv.Filename)
-
+		err = os.Remove(utils.UploadPath + "cv/" + filename)
+		if err != nil {
+			log.Printf("Error removing file %s, err = %s\n", utils.UploadPath+"cv/"+cv.Filename, err.Error())
+		}
 		return
 	}
 
@@ -77,7 +84,7 @@ func UploadMultiCV(c *gin.Context) {
 	for _, file := range files {
 		filename := filepath.Base(file.Filename)
 		log.Printf("filename: %s\n", filename)
-		if err := c.SaveUploadedFile(file, utils.UploadPath+filename); err != nil {
+		if err := c.SaveUploadedFile(file, utils.UploadPath+"cv/"+filename); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"code": 400,
 				"msg":  fmt.Sprintf("文件%s保存失败", filename),
@@ -85,7 +92,7 @@ func UploadMultiCV(c *gin.Context) {
 			return
 		}
 		// TODO: convert the file to CV and save it to the database
-		cv, err := converter.ConvertDocToCV(utils.UploadPath + filename)
+		cv, err := converter.ConvertDocToCV(utils.UploadPath + "cv/" + filename)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"code": 400,
@@ -120,7 +127,7 @@ func UploadPosition(c *gin.Context) {
 	}
 
 	filename := filepath.Base(file.Filename)
-	if err := c.SaveUploadedFile(file, utils.UploadPath+filename); err != nil {
+	if err := c.SaveUploadedFile(file, utils.UploadPath+"position/"+filename); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": 400,
 			"msg":  "文件保存失败",
@@ -128,7 +135,7 @@ func UploadPosition(c *gin.Context) {
 		return
 	}
 
-	positions, err := converter.ConvertDocToPositions(utils.UploadPath + filename)
+	positions, err := converter.ConvertDocToPositions(utils.UploadPath + "position/" + filename)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": 400,

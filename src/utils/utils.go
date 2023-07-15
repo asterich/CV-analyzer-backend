@@ -25,6 +25,13 @@ var (
 	// RedisAddr     string
 	// RedisPassword string
 	// RedisDB       int
+
+	// OCR service configs
+	OCRServerUrl string
+
+	// LLM service configs
+	LLMServerUrl         string
+	LLMServerUrlPosition string
 )
 
 // degrees
@@ -43,6 +50,8 @@ func init() {
 	LoadServer(file)
 	LoadDb(file)
 	LoadUpload(file)
+	LoadOCRService(file)
+	LoadLLMService(file)
 }
 
 func LoadServer(file *ini.File) {
@@ -64,4 +73,17 @@ func LoadUpload(file *ini.File) {
 	var uploadSection = file.Section("upload")
 	UploadPath = uploadSection.Key("UploadPath").String()
 	log.Printf("UploadPath: %s\n", UploadPath)
+}
+
+func LoadOCRService(file *ini.File) {
+	var ocrSection = file.Section("ocr_service")
+	OCRServerUrl = ocrSection.Key("OCRServerUrl").String()
+	log.Printf("OCRServerAddr: %s\n", OCRServerUrl)
+}
+
+func LoadLLMService(file *ini.File) {
+	var llmSection = file.Section("llm_service")
+	LLMServerUrl = llmSection.Key("LLMServerUrl").String()
+	LLMServerUrlPosition = llmSection.Key("LLMServerUrlPosition").String()
+	log.Printf("LLMServerAddr: %s\n", LLMServerUrl)
 }
