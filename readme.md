@@ -1,88 +1,36 @@
-# CV-ANALYZER(智能简历解析系统)
+ubuntu下部署：
 
-## 项目介绍
-
-本项目是一个基于深度学习的智能简历解析系统，可以将简历中的各种信息（姓名、性别、年龄、学历、工作经历、项目经历、技能、自我评价等）提取出来，方便企业进行简历筛选。
-
-本技术文档将对该系统的整体运行流程，后端结构和技术栈，AI端技术栈进行介绍。
-
-## 项目结构
-
-整体项目流程如下：
-
-简历上传：
-
-简历上传 -> 后端接收简历 -> AI端解析简历 -> AI端返回解析结果 -> 后端返回解析结果 -> 前端展示解析结果
-
-岗位上传：
-
-公司发布岗位 -> AI端解析岗位 -> AI端返回解析结果 -> 后端接收岗位 -> 后端将岗位信息存入数据库
-
-简历筛选（人岗匹配）：
-
-后端从数据库中读取岗位信息 -> 后端从数据库中读取简历信息 -> 后端将岗位信息和简历信息传给AI端 -> AI端返回匹配结果 -> 后端返回匹配结果 -> 前端展示匹配结果
-
-## 后端运行流程
-
-后端使用 `go` 语言编写，使用 `gin` 框架，采用http协议与前端和AI端进行通信，使用 `gorm` 框架与数据库（sqlite）进行交互。
-
-### 实现功能
-
-- 接收简历上传请求，将简历存入数据库
-- 接收岗位上传请求，将岗位存入数据库
-- 接收简历筛选请求，将简历和岗位信息传给AI端，将AI端返回的匹配结果存入数据库
-- 接收前端请求，从数据库中读取简历信息，返回给前端
-- 接收前端请求，从数据库中读取岗位信息，返回给前端
-- 接收前端请求，从数据库中读取匹配结果，返回给前端
-
-### 后端技术栈
-
-- go
-- gin
-- gorm
-- sqlite
-
-### 后端结构
-
-```
-├── README.md
-├── config
-│   └── config.ini # 配置文件
-├── src
-│   ├── api/v1 # api接口
-│   │   ├── cv.go # 简历相关接口
-│   │   ├── position.go # 岗位相关接口
-│   │   └── upload.go # 上传相关接口
-│   ├── converter # 简历转换
-│   │   └── doc_converter.go # doc转换
-│   ├── model # 数据库模型
-│   │   ├── cv.go # 简历模型
-│   │   ├── db.go # 数据库连接 
-│   │   └── position.go # 岗位模型
-│   ├── router # 路由
-│   │   └── router.go # 路由配置
-│   ├── test # 测试
-│   │   └── extract_test.go # 简历解析测试
-│   |── utils # 工具
-│   |   ├── errmsg # 错误信息
-│   |   │   └── errmsg.go # 错误信息
-│   |   └─── utils.go # 工具函数
-|   └── main.go # 入口文件
-|── go.mod 
-|── go.sum 
-└── api-doc.json # api文档
+```bash
+sudo apt-get install poppler-utils
+sudo apt-get install libreoffice libreoffice-l10n-zh-cn libreoffice-help-zh-cn
 ```
 
-## AI端运行流程
+```bash
+python3 -m pip install -r requirements.txt
+```
 
-### 简历解析
+```bash
+go run src/main.go
+```
 
-AI 端采用了以下流程完成简历解析
+*关于config*
 
-通过OCR（Optical Character Recognition，光学字符识别)技术扫描文档图片，利用KIE（key Infomation Extraction，关键信息题取)技术对扫描后的文档进行文字信息提取。
+具体配置文件在config/config.ini中，其中：
 
-具体来说，运用了LayoutXLM在预训练后，对简历的关键信息进行提取。LayoutXLM是针对视觉丰富文档（Visually-rich Document, VrRD）的多模态预训练模型，其在LayoutLM模型的基础上进一步考虑了多语种文档提取任务，更适合中文的文本信息提取。
-
-接着，利用大语言模型“百川”将提取后的进行转换，将其转换为json格式，方便后端进行处理。
-
-### 人岗匹配
+```ini
+[server] # 关于服务器部署
+AppMode = debug # debug模式和release模式
+HttpPort = 8090 # 服务器端口
+JwtKey = 324234234 # jwt密钥
+MaxLoginTime = 240 # 登录过期时间
+[database] # 数据库配置
+Db = sqlite # 数据库类型
+DbName = softbei # 数据库名称
+DbPath = ./data/softbei_test.db # 数据库路径
+[upload] # 文件上传配置
+UploadPath = ./static/ # 文件路径
+[redis] # redis配置
+RedisAddr = 127.0.0.1:6379 # redis地址
+RedisPassword = # redis密码
+RedisDB = 0 # redis DB
+```
