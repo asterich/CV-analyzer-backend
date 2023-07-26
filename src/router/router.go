@@ -16,6 +16,7 @@ func InitRouter() *gin.Engine {
 
 	api_v1 := r.Group("/api/v1")
 
+	api_v1.Use(middleware.CORS())
 	{
 		// upload file
 		api_v1.POST("/cv", v1.UploadCV)
@@ -23,6 +24,7 @@ func InitRouter() *gin.Engine {
 		api_v1.POST("/positions", v1.UploadPosition)
 
 		api_v1.GET("/cv", v1.GetCV)
+		api_v1.POST("/cv/best_match", v1.GetBestMatch)
 		// cv
 		api_v1.DELETE("/cv/filename/:filename", v1.DeleteCVByFilename)
 		api_v1.DELETE("/cv/id/:id", v1.DeleteCVByID)
@@ -35,8 +37,6 @@ func InitRouter() *gin.Engine {
 		api_v1.GET("/count_degree", v1.GetCountDegree)
 		api_v1.GET("/count_workingyears", v1.GetCountWorkingyears)
 	}
-
-	r.Use(middleware.CORS())
 
 	return r
 }
